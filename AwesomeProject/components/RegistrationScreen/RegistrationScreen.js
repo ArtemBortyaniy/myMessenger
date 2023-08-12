@@ -11,7 +11,7 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import { launchImageLibrary } from "react-native-image-picker";
+import * as ImagePicker from "expo-image-picker";
 
 const RegistrationScreen = () => {
   const [visibleKeyboard, setVisibleKeyboard] = useState(false);
@@ -19,6 +19,7 @@ const RegistrationScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [image, setImage] = useState(null);
 
   const handleChanche = () => {
     setVisibleKeyboard(true);
@@ -29,13 +30,13 @@ const RegistrationScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
-    if (login === "" || email === "" || password === "") {
+    if ((login === "" || email === "" || password === "", image === null)) {
       alert("Заповніть усі поля");
       return;
     }
     handleCloseKeyboard();
     reset();
-    console.log({ login, email, password });
+    console.log({ image, login, email, password });
   };
 
   const reset = () => {
@@ -48,11 +49,20 @@ const RegistrationScreen = () => {
     setSecureTextEntry(!secureTextEntry);
   };
 
-  const openGallery = async () => {
-    const result = await launchImageLibrary({ mediaType: "photo" });
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
 
-    if (result.assets) {
-      console.log(result.assets);
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      console.log(image);
     }
   };
 
@@ -79,16 +89,35 @@ const RegistrationScreen = () => {
                 bottom: !visibleKeyboard ? "78%" : "83%",
               }}
             >
-              <TouchableOpacity
-                style={styles.btnAdd}
-                activeOpacity={0.8}
-                onPress={openGallery}
-              >
+              {image && (
                 <Image
-                  source={require("../../assets/img/add.png")}
-                  style={styles.btnAdd}
+                  source={{ uri: image }}
+                  style={{ flex: 1, borderRadius: 16 }}
                 />
-              </TouchableOpacity>
+              )}
+              {!image ? (
+                <TouchableOpacity
+                  style={styles.btnAdd}
+                  activeOpacity={0.8}
+                  onPress={pickImage}
+                >
+                  <Image
+                    source={require("../../assets/img/add.png")}
+                    style={styles.btnAdd}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.btnAdd}
+                  activeOpacity={0.8}
+                  onPress={() => setImage(null)}
+                >
+                  <Image
+                    source={require("../../assets/img/btnDelete.png")}
+                    style={styles.btnDelete}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
             <Text style={styles.title}>Реєстрація</Text>
             <View style={styles.form}>
@@ -179,7 +208,14 @@ const styles = StyleSheet.create({
     height: 25,
     position: "absolute",
     left: 53,
-    bottom: 14,
+    bottom: 8,
+  },
+  btnDelete: {
+    // width: 25,
+    // height: 25,
+    position: "absolute",
+    left: 47,
+    bottom: 2,
   },
   title: {
     fontWeight: "500",
