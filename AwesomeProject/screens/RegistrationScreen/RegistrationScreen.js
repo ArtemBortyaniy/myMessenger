@@ -11,12 +11,17 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { useNavigation } from "@react-navigation/native";
 
-const LoginScreen = () => {
+const RegistrationScreen = () => {
   const [visibleKeyboard, setVisibleKeyboard] = useState(false);
+  const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+  const [image, setImage] = useState(null);
+  const navigation = useNavigation();
 
   const handleChanche = () => {
     setVisibleKeyboard(true);
@@ -27,22 +32,38 @@ const LoginScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
-    if (email === "" || password === "") {
+    if (login === "" || email === "" || password === "" || image === null) {
       alert("Заповніть усі поля");
       return;
     }
     handleCloseKeyboard();
     reset();
-    console.log({ email, password });
+    console.log({ image, login, email, password });
   };
 
   const reset = () => {
+    setLogin("");
     setEmail("");
     setPassword("");
+    setImage(null);
   };
 
   const toggleSecureEntry = () => {
     setSecureTextEntry(!secureTextEntry);
+  };
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+      console.log(image);
+    }
   };
 
   return (
@@ -57,13 +78,59 @@ const LoginScreen = () => {
             style={{
               ...styles.containerForm,
               ...Platform.select({
-                ios: { height: visibleKeyboard ? 585 : 489 },
-                android: { height: visibleKeyboard ? 560 : 489 },
+                ios: { height: visibleKeyboard ? 710 : 549 },
+                android: { height: visibleKeyboard ? 685 : 549 },
               }),
             }}
           >
-            <Text style={styles.title}>Увійти</Text>
+            <View
+              style={{
+                ...styles.photoUser,
+                bottom: !visibleKeyboard ? "78%" : "83%",
+              }}
+            >
+              {image && (
+                <Image
+                  source={{ uri: image }}
+                  style={{ flex: 1, borderRadius: 16 }}
+                />
+              )}
+              {!image ? (
+                <TouchableOpacity
+                  style={styles.btnAdd}
+                  activeOpacity={0.8}
+                  onPress={pickImage}
+                >
+                  <Image
+                    source={require("../../assets/img/add.png")}
+                    style={styles.btnAdd}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.btnAdd}
+                  activeOpacity={0.8}
+                  onPress={() => setImage(null)}
+                >
+                  <Image
+                    source={require("../../assets/img/btnDelete.png")}
+                    style={styles.btnDelete}
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
+            <Text style={styles.title}>Реєстрація</Text>
             <View style={styles.form}>
+              <View style={styles.marginBottom}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Логін"
+                  value={login}
+                  onFocus={() => handleChanche()}
+                  onChangeText={setLogin}
+                  onSubmitEditing={handleOnSubmitEditing}
+                />
+              </View>
               <View style={styles.marginBottom}>
                 <TextInput
                   style={styles.input}
@@ -98,11 +165,13 @@ const LoginScreen = () => {
                 activeOpacity={0.8}
                 onPress={() => handleOnSubmitEditing()}
               >
-                <Text style={styles.btnTitle}>Увійти</Text>
+                <Text style={styles.btnTitle}>Зареєстуватися</Text>
               </TouchableOpacity>
-              <Text style={styles.link}>
-                Немає акаунту?{" "}
-                <Text style={styles.linkRegister}>Зареєструватися</Text>
+              <Text
+                style={styles.link}
+                onPress={() => navigation.navigate("Login")}
+              >
+                Вже є акаунт? Увійти
               </Text>
             </View>
           </View>
@@ -121,18 +190,40 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   containerForm: {
-    borderRadius: 25,
     backgroundColor: "#FFFFFF",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
   },
   form: {
     marginHorizontal: 16,
     position: "relative",
   },
+  photoUser: {
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+    width: 120,
+    height: 120,
+    position: "absolute",
+    left: "50%",
+    transform: [{ translateX: -60 }, { translateY: -60 }],
+  },
+  btnAdd: {
+    width: 25,
+    height: 25,
+    position: "absolute",
+    left: 53,
+    bottom: 8,
+  },
+  btnDelete: {
+    position: "absolute",
+    left: 47,
+    bottom: 2,
+  },
   title: {
     fontWeight: "500",
     color: "#212121",
     fontSize: 30,
-    marginTop: 32,
+    marginTop: 92,
     textAlign: "center",
     marginBottom: 33,
   },
@@ -174,11 +265,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
-  linkRegister: {
-    textDecorationLine: "underline",
-    fontSize: 16,
-    color: "#1B4371",
-  },
 });
 
-export default LoginScreen;
+export default RegistrationScreen;
