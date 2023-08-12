@@ -11,7 +11,7 @@ import {
   Keyboard,
   Platform,
 } from "react-native";
-import { launchCamera, launchImageLibrary } from "react-native-image-picker";
+import { launchImageLibrary } from "react-native-image-picker";
 
 const RegistrationScreen = () => {
   const [visibleKeyboard, setVisibleKeyboard] = useState(false);
@@ -29,7 +29,7 @@ const RegistrationScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
-    if ((login === "", email === "" || password === "")) {
+    if (login === "" || email === "" || password === "") {
       alert("Заповніть усі поля");
       return;
     }
@@ -49,26 +49,11 @@ const RegistrationScreen = () => {
   };
 
   const openGallery = async () => {
-    const options = {
-      title: "Select Photo",
-      storageOptions: {
-        skipBackup: true,
-        path: "images",
-      },
-    };
+    const result = await launchImageLibrary({ mediaType: "photo" });
 
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled photo picker");
-      } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
-      } else if (response.customButton) {
-        console.log("User tapped custom button: ", response.customButton);
-      } else {
-        const source = { uri: response.uri };
-        setSelectedImage(source);
-      }
-    });
+    if (result.assets) {
+      console.log(result.assets);
+    }
   };
 
   return (
@@ -97,7 +82,7 @@ const RegistrationScreen = () => {
               <TouchableOpacity
                 style={styles.btnAdd}
                 activeOpacity={0.8}
-                onPress={() => openGallery()}
+                onPress={openGallery}
               >
                 <Image
                   source={require("../../assets/img/add.png")}
@@ -142,9 +127,7 @@ const RegistrationScreen = () => {
                   style={styles.showPassword}
                   onPress={toggleSecureEntry}
                 >
-                  <Text>
-                    <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
-                  </Text>
+                  <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
                 </TouchableOpacity>
               </View>
 
