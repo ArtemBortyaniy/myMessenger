@@ -36,6 +36,7 @@ const LoginScreen = () => {
     handleCloseKeyboard();
     reset();
     console.log({ email, password });
+    navigation.navigate("Home");
   };
 
   const reset = () => {

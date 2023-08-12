@@ -32,13 +32,14 @@ const RegistrationScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
-    if (login === "" || email === "" || password === "" || image === null) {
+    if (login === "" || email === "" || password === "") {
       alert("Заповніть усі поля");
       return;
     }
     handleCloseKeyboard();
     reset();
     console.log({ image, login, email, password });
+    navigation.navigate("Home");
   };
 
   const reset = () => {
