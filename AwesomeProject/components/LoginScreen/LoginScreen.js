@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -7,50 +7,110 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform,
 } from "react-native";
 
-const LoginScreen = () => (
-  <View style={styles.container}>
-    <ImageBackground
-      source={require("../../assets/img/photoBG.png")}
-      resizeMode="cover"
-      style={styles.image}
-    >
-      <View style={styles.containerForm}>
-        <View style={styles.photoUser}>
-          <TouchableOpacity style={styles.btnAdd} activeOpacity={0.8}>
-            <Image
-              source={require("../../assets/img/add.png")}
-              style={styles.btnAdd}
-            />
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.title}>Реєстрація</Text>
-        <View style={styles.form}>
-          <View style={styles.marginBottom}>
-            <TextInput style={styles.input} placeholder="Логін" />
+const LoginScreen = () => {
+  const [visibleKeyboard, setVisibleKeyboard] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+  const handleChanche = () => {
+    setVisibleKeyboard(true);
+  };
+
+  const handleCloseKeyboard = () => {
+    Keyboard.dismiss(), setVisibleKeyboard(false);
+  };
+
+  const handleOnSubmitEditing = () => {
+    if (email === "" || password === "") {
+      alert("Заповніть усі поля");
+      return;
+    }
+    handleCloseKeyboard();
+    reset();
+    console.log({ email, password });
+  };
+
+  const reset = () => {
+    setEmail("");
+    setPassword("");
+  };
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
+      <View style={styles.container}>
+        <ImageBackground
+          source={require("../../assets/img/photoBG.png")}
+          resizeMode="cover"
+          style={styles.image}
+        >
+          <View
+            style={{
+              ...styles.containerForm,
+              ...Platform.select({
+                ios: { height: visibleKeyboard ? 585 : 489 },
+                android: { height: visibleKeyboard ? 560 : 489 },
+              }),
+            }}
+          >
+            <Text style={styles.title}>Увійти</Text>
+            <View style={styles.form}>
+              <View style={styles.marginBottom}>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Адреса електронної пошти"
+                  value={email}
+                  onFocus={() => handleChanche()}
+                  onChangeText={setEmail}
+                  onSubmitEditing={handleOnSubmitEditing}
+                />
+              </View>
+              <View>
+                <TextInput
+                  style={styles.input}
+                  placeholder="Пароль"
+                  value={password}
+                  onFocus={() => handleChanche()}
+                  onChangeText={setPassword}
+                  onSubmitEditing={handleOnSubmitEditing}
+                  secureTextEntry={secureTextEntry}
+                />
+                <TouchableOpacity
+                  activeOpacity={0.8}
+                  style={styles.showPassword}
+                  onPress={toggleSecureEntry}
+                >
+                  <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                style={styles.btn}
+                activeOpacity={0.8}
+                onPress={() => handleOnSubmitEditing()}
+              >
+                <Text style={styles.btnTitle}>Увійти</Text>
+              </TouchableOpacity>
+              <Text style={styles.link}>
+                Немає акаунту?{" "}
+                <Text style={styles.linkRegister}>Зареєструватися</Text>
+              </Text>
+            </View>
           </View>
-          <View style={styles.marginBottom}>
-            <TextInput
-              style={styles.input}
-              placeholder="Адреса електронної пошти"
-            />
-          </View>
-          <View>
-            <TextInput style={styles.input} placeholder="Пароль" />
-            <TouchableOpacity activeOpacity={0.8} style={styles.showPassword}>
-              <Text>Показати</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.btn} activeOpacity={0.8}>
-            <Text style={styles.btnTitle}>Зареєстуватися</Text>
-          </TouchableOpacity>
-        </View>
-        <Text style={styles.link}>Вже є акаунт? Увійти</Text>
+        </ImageBackground>
       </View>
-    </ImageBackground>
-  </View>
-);
+    </TouchableWithoutFeedback>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -61,7 +121,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   containerForm: {
-    height: 549,
     borderRadius: 25,
     backgroundColor: "#FFFFFF",
   },
@@ -69,28 +128,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     position: "relative",
   },
-  photoUser: {
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    width: 120,
-    height: 120,
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    transform: [{ translateX: -60 }, { translateY: -335 }],
-  },
-  btnAdd: {
-    width: 25,
-    height: 25,
-    position: "absolute",
-    left: 53,
-    bottom: 14,
-  },
   title: {
     fontWeight: "500",
     color: "#212121",
     fontSize: 30,
-    marginTop: 92,
+    marginTop: 32,
     textAlign: "center",
     marginBottom: 33,
   },
@@ -131,6 +173,11 @@ const styles = StyleSheet.create({
     color: "#1B4371",
     fontSize: 16,
     textAlign: "center",
+  },
+  linkRegister: {
+    textDecorationLine: "underline",
+    fontSize: 16,
+    color: "#1B4371",
   },
 });
 

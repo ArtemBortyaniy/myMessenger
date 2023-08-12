@@ -18,6 +18,7 @@ const RegistrationScreen = () => {
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
 
   const handleChanche = () => {
     setVisibleKeyboard(true);
@@ -28,6 +29,10 @@ const RegistrationScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
+    if ((login === "", email === "" || password === "")) {
+      alert("Заповніть усі поля");
+      return;
+    }
     handleCloseKeyboard();
     reset();
     console.log({ login, email, password });
@@ -37,6 +42,10 @@ const RegistrationScreen = () => {
     setLogin("");
     setEmail("");
     setPassword("");
+  };
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
   };
 
   const openGallery = async () => {
@@ -126,12 +135,16 @@ const RegistrationScreen = () => {
                   onFocus={() => handleChanche()}
                   onChangeText={setPassword}
                   onSubmitEditing={handleOnSubmitEditing}
+                  secureTextEntry={secureTextEntry}
                 />
                 <TouchableOpacity
                   activeOpacity={0.8}
                   style={styles.showPassword}
+                  onPress={toggleSecureEntry}
                 >
-                  <Text>Показати</Text>
+                  <Text>
+                    <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
+                  </Text>
                 </TouchableOpacity>
               </View>
 
