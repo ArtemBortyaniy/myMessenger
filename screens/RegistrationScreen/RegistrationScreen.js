@@ -10,6 +10,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
@@ -75,107 +76,94 @@ const RegistrationScreen = () => {
           resizeMode="cover"
           style={styles.image}
         >
-          <View
-            style={{
-              ...styles.containerForm,
-              ...Platform.select({
-                ios: { height: visibleKeyboard ? 710 : 549 },
-                android: { height: visibleKeyboard ? 685 : 549 },
-              }),
-            }}
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={{ flexGrow: 1, justifyContent: "flex-end" }}
+            keyboardVerticalOffset={-180}
           >
-            <View
-              style={{
-                ...styles.photoUser,
-                bottom: !visibleKeyboard ? "78%" : "83%",
-              }}
-            >
-              {image && (
-                <Image
-                  source={{ uri: image }}
-                  style={{ flex: 1, borderRadius: 16 }}
-                />
-              )}
-              {!image ? (
-                <TouchableOpacity
-                  style={styles.btnAdd}
-                  activeOpacity={0.8}
-                  onPress={pickImage}
-                >
-                  <Image
-                    source={require("../../assets/img/add.png")}
-                    style={styles.btnAdd}
+            <View style={{ ...styles.containerForm, paddingBottom: 80 }}>
+              <View style={styles.wrapperPhoto}>
+                <View style={styles.containerPhoto}>
+                  {image && (
+                    <Image source={{ uri: image }} style={styles.imageUser} />
+                  )}
+                  {!image ? (
+                    <TouchableOpacity activeOpacity={0.8} onPress={pickImage}>
+                      <Image
+                        source={require("../../assets/img/add.png")}
+                        style={styles.btnAdd}
+                      />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      activeOpacity={0.8}
+                      onPress={() => setImage(null)}
+                    >
+                      <Image
+                        source={require("../../assets/img/delete.png")}
+                        style={styles.btnDelete}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </View>
+              <Text style={styles.title}>Реєстрація</Text>
+              <View style={styles.form}>
+                <View style={styles.marginBottom}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Логін"
+                    value={login}
+                    onFocus={() => handleChanche()}
+                    onChangeText={setLogin}
+                    onSubmitEditing={handleOnSubmitEditing}
                   />
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={styles.btnAdd}
-                  activeOpacity={0.8}
-                  onPress={() => setImage(null)}
-                >
-                  <Image
-                    source={require("../../assets/img/btnDelete.png")}
-                    style={styles.btnDelete}
+                </View>
+                <View style={styles.marginBottom}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Адреса електронної пошти"
+                    value={email}
+                    onFocus={() => handleChanche()}
+                    onChangeText={setEmail}
+                    onSubmitEditing={handleOnSubmitEditing}
                   />
-                </TouchableOpacity>
-              )}
-            </View>
-            <Text style={styles.title}>Реєстрація</Text>
-            <View style={styles.form}>
-              <View style={styles.marginBottom}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Логін"
-                  value={login}
-                  onFocus={() => handleChanche()}
-                  onChangeText={setLogin}
-                  onSubmitEditing={handleOnSubmitEditing}
-                />
-              </View>
-              <View style={styles.marginBottom}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Адреса електронної пошти"
-                  value={email}
-                  onFocus={() => handleChanche()}
-                  onChangeText={setEmail}
-                  onSubmitEditing={handleOnSubmitEditing}
-                />
-              </View>
-              <View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Пароль"
-                  value={password}
-                  onFocus={() => handleChanche()}
-                  onChangeText={setPassword}
-                  onSubmitEditing={handleOnSubmitEditing}
-                  secureTextEntry={secureTextEntry}
-                />
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.showPassword}
-                  onPress={toggleSecureEntry}
-                >
-                  <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Пароль"
+                    value={password}
+                    onFocus={() => handleChanche()}
+                    onChangeText={setPassword}
+                    onSubmitEditing={handleOnSubmitEditing}
+                    secureTextEntry={secureTextEntry}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.showPassword}
+                    onPress={toggleSecureEntry}
+                  >
+                    <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
+                  </TouchableOpacity>
+                </View>
 
-              <TouchableOpacity
-                style={styles.btn}
-                activeOpacity={0.8}
-                onPress={() => handleOnSubmitEditing()}
-              >
-                <Text style={styles.btnTitle}>Зареєстуватися</Text>
-              </TouchableOpacity>
-              <Text
-                style={styles.link}
-                onPress={() => navigation.navigate("Login")}
-              >
-                Вже є акаунт? Увійти
-              </Text>
+                <TouchableOpacity
+                  style={styles.btn}
+                  activeOpacity={0.8}
+                  onPress={() => handleOnSubmitEditing()}
+                >
+                  <Text style={styles.btnTitle}>Зареєстуватися</Text>
+                </TouchableOpacity>
+                <Text
+                  style={styles.link}
+                  onPress={() => navigation.navigate("Login")}
+                >
+                  Вже є акаунт? Увійти
+                </Text>
+              </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -194,31 +182,44 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    height: 549,
+  },
+  wrapperPhoto: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: -60,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  containerPhoto: {
+    width: 120,
+    height: 120,
+    position: "relative",
+    backgroundColor: "#F6F6F6",
+    borderRadius: 16,
+  },
+  imageUser: {
+    flex: 1,
+    borderRadius: 16,
+  },
+  btnAdd: {
+    position: "absolute",
+    right: -12,
+    top: 81,
+    width: 25,
+    height: 25,
+  },
+  btnDelete: {
+    position: "absolute",
+    right: -19,
+    top: -47,
+    width: 39,
+    height: 39,
   },
   form: {
     marginHorizontal: 16,
     position: "relative",
-  },
-  photoUser: {
-    backgroundColor: "#F6F6F6",
-    borderRadius: 16,
-    width: 120,
-    height: 120,
-    position: "absolute",
-    left: "50%",
-    transform: [{ translateX: -60 }, { translateY: -60 }],
-  },
-  btnAdd: {
-    width: 25,
-    height: 25,
-    position: "absolute",
-    left: 53,
-    bottom: 8,
-  },
-  btnDelete: {
-    position: "absolute",
-    left: 47,
-    bottom: 2,
   },
   title: {
     fontWeight: "500",
