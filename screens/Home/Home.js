@@ -4,23 +4,53 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CreatePostsScreen from "../CreatePostsScreen/CreatePostsScreen";
 import PostsScreen from "../PostsScreen/PostsScreen";
 import ProfileScreen from "../ProfileScreen/ProfileScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
-const HeaderTitle = ({ title }) => (
-  <View style={{ color: "#212121", marginBottom: 11, fontSize: 17 }}>
-    <Text>{title}</Text>
+export const GoBack = () => {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      style={{ width: 24, height: 24, marginLeft: 16, marginBottom: 10 }}
+      onPress={() => navigation.goBack()}
+    >
+      <Image source={require("../../assets/img/arrow-left.png")} />
+    </TouchableOpacity>
+  );
+};
+
+export const HeaderTitle = ({ title }) => (
+  <View
+    style={{
+      marginBottom: 11,
+    }}
+  >
+    <Text
+      style={{
+        color: "#212121",
+        fontSize: 17,
+        fontWeight: "700",
+      }}
+    >
+      {title}
+    </Text>
   </View>
 );
 
-const HeaderLogOut = () => (
-  <TouchableOpacity
-    activeOpacity={0.8}
-    style={{ marginRight: 10, marginBottom: 10 }}
-  >
-    <Image source={require("../../assets/img/log-out.png")} />
-  </TouchableOpacity>
-);
+export const HeaderLogOut = () => {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      style={{ marginRight: 10, marginBottom: 10 }}
+      onPress={() => navigation.navigate("Login")}
+    >
+      <Image source={require("../../assets/img/log-out.png")} />
+    </TouchableOpacity>
+  );
+};
 
 function Home() {
   return (
@@ -64,11 +94,13 @@ function Home() {
         component={CreatePostsScreen}
         options={{
           headerTitle: () => <HeaderTitle title={"Створити публікацію"} />,
+          headerLeft: () => <GoBack />,
           tabBarLabel: "CreatePostsScreen",
           tabBarIcon: ({ color, size }) => (
             <Image source={require("../../assets/img/new.png")} />
           ),
           tabBarLabel: "",
+          tabBarStyle: { display: "none" },
         }}
       />
       <Tab.Screen
@@ -88,11 +120,7 @@ function Home() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  container: {},
 });
 
 export default Home;
