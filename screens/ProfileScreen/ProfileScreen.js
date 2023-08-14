@@ -114,11 +114,13 @@ const ProfileScreen = () => {
                     <Text style={styles.titlePost}>{title}</Text>
                     <View style={styles.info}>
                       <View style={styles.containerMessage}>
-                        <View
+                        <TouchableOpacity
                           style={{
                             ...styles.containerMessage,
                             ...styles.marginRight,
                           }}
+                          activeOpacity={0.6}
+                          onPress={() => navigation.navigate("Кометарі")}
                         >
                           <Image
                             source={require("../../assets/img/comments.png")}
@@ -126,7 +128,7 @@ const ProfileScreen = () => {
                           <Text style={styles.countComments}>
                             {commentsCount}
                           </Text>
-                        </View>
+                        </TouchableOpacity>
                         <View style={styles.containerMessage}>
                           <Image
                             source={require("../../assets/img/likes.png")}
