@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
+import * as Location from "expo-location";
 
 const CreatePostsScreen = () => {
   const [titlePost, setTitlePost] = useState("");
@@ -16,6 +17,27 @@ const CreatePostsScreen = () => {
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+
+      try {
+        let location = await Location.getCurrentPositionAsync({});
+        const coords = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+        setLocation(coords);
+      } catch (error) {
+        console.error("Error getting location:", error);
+      }
+    })();
+  }, [location]);
 
   useEffect(() => {
     (async () => {
@@ -33,21 +55,28 @@ const CreatePostsScreen = () => {
     return <Text>No access to camera</Text>;
   }
 
+  const handleSubmit = () => {
+    console.log(titlePost, titleLocation, location);
+    clearPost();
+  };
+
+  const clearPost = () => {
+    setTitlePost("");
+    setTitleLocation("");
+    setLocation(null);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={{ ...styles.marginHorizontal, ...styles.marginBottom }}>
+      <View
+        style={[
+          styles.marginHorizontal,
+          styles.marginBottom,
+          styles.wrapperCamera,
+        ]}
+      >
         <Camera style={styles.camera} type={type} ref={setCameraRef}>
           <View style={styles.photoView}>
-            <TouchableOpacity
-              style={styles.flipContainer}
-              onPress={() => {
-                setType(
-                  type === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                );
-              }}
-            ></TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
               onPress={async () => {
@@ -57,9 +86,24 @@ const CreatePostsScreen = () => {
                 }
               }}
             >
-              <View style={styles.takePhotoOut}>
-                <View style={styles.takePhotoInner}></View>
-              </View>
+              <Image source={require("../../assets/img/addPhotoPost.png")} />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.flipView}>
+            <TouchableOpacity
+              style={styles.flipContainer}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back
+                );
+              }}
+            >
+              <Text style={{ fontSize: 18, marginBottom: 10, color: "white" }}>
+                {" "}
+                Flip{" "}
+              </Text>
             </TouchableOpacity>
           </View>
         </Camera>
@@ -91,12 +135,17 @@ const CreatePostsScreen = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           style={{ ...styles.marginHorizontal, ...styles.btnSubmit }}
+          onPress={handleSubmit}
         >
           <Text style={styles.btnText}>Опубліковати</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.clearPost}>
-        <TouchableOpacity activeOpacity={0.5} style={styles.btnClear}>
+        <TouchableOpacity
+          activeOpacity={0.5}
+          style={styles.btnClear}
+          onPress={clearPost}
+        >
           <Image source={require("../../assets/img/clearPost.png")} />
         </TouchableOpacity>
       </View>
@@ -111,37 +160,32 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     backgroundColor: "#FFFFFF",
   },
+  wrapperCamera: {
+    borderRadius: 8,
+  },
   camera: {
     width: "100%",
     height: 240,
     borderRadius: 8,
   },
+  photoView: {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: [{ translateX: -27 }, { translateY: -40 }],
+  },
+  flipView: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+  },
+  button: {},
   marginHorizontal: {
     marginHorizontal: 16,
   },
   marginBottom: {
     marginBottom: 32,
   },
-  // imgPost: {
-  //   width: "100%",
-  //   height: 240,
-  //   backgroundColor: "#E8E8E8",
-  //   alignItems: "center",
-  //   justifyContent: "center",
-  //   marginBottom: 8,
-  //   borderRadius: 8,
-  // },
-  // changePhoto: {
-  //   width: "100%",
-  //   height: 240,
-  //   borderRadius: 8,
-  // },
-  // editImg: {
-  //   position: "absolute",
-  //   top: "50%",
-  //   left: "50%",
-  //   transform: [{ translateX: -25 }, { translateY: -25 }],
-  // },
   text: {
     marginTop: 8,
     color: "#BDBDBD",
