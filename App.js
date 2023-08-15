@@ -4,10 +4,16 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import RegistrationScreen from "./screens/RegistrationScreen/RegistrationScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
-import Home from "./screens/Home/Home";
 import CommentsScreen from "./screens/CommentsScreen/CommentsScreen";
 import MapScreen from "./screens/MapScreen/MapScreen";
+import { Image, TouchableOpacity, View, Text } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import CreatePostsScreen from "./screens/CreatePostsScreen/CreatePostsScreen";
+import PostsScreen from "./screens/PostsScreen/PostsScreen";
+import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
+import { useNavigation } from "@react-navigation/native";
 
+const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
 const App = () => (
@@ -28,10 +34,118 @@ const App = () => (
         component={Home}
         options={{ headerShown: false }}
       />
-      <MainStack.Screen name="Кометарі" component={CommentsScreen} />
-      <MainStack.Screen name="Карта" component={MapScreen} />
+      <MainStack.Screen name="Comments" component={CommentsScreen} />
+      <MainStack.Screen name="Map" component={MapScreen} />
     </MainStack.Navigator>
   </NavigationContainer>
 );
 
 export default App;
+
+function Home() {
+  return (
+    <Tab.Navigator
+      initialRouteName="PostsScreen"
+      screenOptions={{
+        tabBarActiveTintColor: "#e91e63",
+        tabBarStyle: {
+          backgroundColor: "#fff",
+          borderTopWidth: 1,
+          borderTopColor: "#ccc",
+          height: 83,
+          paddingTop: 9,
+          paddingBottom: 34,
+          paddingLeft: 82,
+          paddingRight: 81,
+        },
+        tabBarLabel: "",
+        headerStyle: {
+          borderBottomColor: "#ccc",
+          borderBottomWidth: 1,
+          height: 88,
+        },
+      }}
+    >
+      <Tab.Screen
+        name="Posts"
+        component={PostsScreen}
+        options={{
+          headerTitle: () => <HeaderTitle title={"Posts"} />,
+          headerRight: () => <HeaderLogOut />,
+          tabBarIcon: ({ color, size }) => (
+            <Image source={require("./assets/img/grid.png")} />
+          ),
+          tabBarLabel: "",
+        }}
+      />
+      <Tab.Screen
+        name="Create post"
+        component={CreatePostsScreen}
+        options={{
+          headerTitle: () => <HeaderTitle title={"Create post"} />,
+          headerLeft: () => <GoBack />,
+          tabBarIcon: ({ color, size }) => (
+            <Image source={require("./assets/img/new.png")} />
+          ),
+          tabBarLabel: "",
+          tabBarStyle: { display: "none" },
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          headerTitle: () => <HeaderTitle title={"Profile"} />,
+          tabBarIcon: ({ color, size }) => (
+            <Image source={require("./assets/img/user.png")} />
+          ),
+          tabBarLabel: "",
+        }}
+      />
+    </Tab.Navigator>
+  );
+}
+
+export const GoBack = () => {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      style={{ width: 24, height: 24, marginLeft: 16, marginBottom: 10 }}
+      onPress={() => navigation.goBack()}
+    >
+      <Image source={require("./assets/img/arrow-left.png")} />
+    </TouchableOpacity>
+  );
+};
+
+export const HeaderTitle = ({ title }) => (
+  <View
+    style={{
+      marginBottom: 11,
+    }}
+  >
+    <Text
+      style={{
+        color: "#212121",
+        fontSize: 17,
+        fontWeight: "700",
+      }}
+    >
+      {title}
+    </Text>
+  </View>
+);
+
+export const HeaderLogOut = () => {
+  const navigation = useNavigation();
+  return (
+    <TouchableOpacity
+      activeOpacity={0.8}
+      style={{ marginRight: 10, marginBottom: 10 }}
+      onPress={() => navigation.navigate("Login")}
+    >
+      <Image source={require("./assets/img/log-out.png")} />
+    </TouchableOpacity>
+  );
+};

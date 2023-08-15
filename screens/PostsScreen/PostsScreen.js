@@ -63,7 +63,7 @@ const PostsScreen = () => {
                 <TouchableOpacity
                   style={styles.containerMessage}
                   activeOpacity={0.6}
-                  onPress={() => navigation.navigate("Кометарі")}
+                  onPress={() => navigation.navigate("Comments")}
                 >
                   <Image
                     source={require("../../assets/img/message-circle.png")}
@@ -72,7 +72,7 @@ const PostsScreen = () => {
                 </TouchableOpacity>
                 <TouchableOpacity
                   activeOpacity={0.6}
-                  onPress={() => navigation.navigate("Карта")}
+                  onPress={() => navigation.navigate("Map")}
                 >
                   <View style={styles.containerLocation}>
                     <Image source={require("../../assets/img/map-pin.png")} />

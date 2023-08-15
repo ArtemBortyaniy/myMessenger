@@ -120,7 +120,7 @@ const ProfileScreen = () => {
                             ...styles.marginRight,
                           }}
                           activeOpacity={0.6}
-                          onPress={() => navigation.navigate("Кометарі")}
+                          onPress={() => navigation.navigate("Comments")}
                         >
                           <Image
                             source={require("../../assets/img/comments.png")}
