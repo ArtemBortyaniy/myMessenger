@@ -16,7 +16,6 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 
 const RegistrationScreen = () => {
-  const [visibleKeyboard, setVisibleKeyboard] = useState(false);
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,12 +23,8 @@ const RegistrationScreen = () => {
   const [image, setImage] = useState(null);
   const navigation = useNavigation();
 
-  const handleChanche = () => {
-    setVisibleKeyboard(true);
-  };
-
   const handleCloseKeyboard = () => {
-    Keyboard.dismiss(), setVisibleKeyboard(false);
+    Keyboard.dismiss();
   };
 
   const handleOnSubmitEditing = () => {
@@ -114,7 +109,6 @@ const RegistrationScreen = () => {
                     style={styles.input}
                     placeholder="Логін"
                     value={login}
-                    onFocus={() => handleChanche()}
                     onChangeText={setLogin}
                     onSubmitEditing={handleOnSubmitEditing}
                   />
@@ -124,7 +118,6 @@ const RegistrationScreen = () => {
                     style={styles.input}
                     placeholder="Адреса електронної пошти"
                     value={email}
-                    onFocus={() => handleChanche()}
                     onChangeText={setEmail}
                     onSubmitEditing={handleOnSubmitEditing}
                   />
@@ -134,7 +127,6 @@ const RegistrationScreen = () => {
                     style={styles.input}
                     placeholder="Пароль"
                     value={password}
-                    onFocus={() => handleChanche()}
                     onChangeText={setPassword}
                     onSubmitEditing={handleOnSubmitEditing}
                     secureTextEntry={secureTextEntry}

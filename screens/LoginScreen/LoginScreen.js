@@ -5,27 +5,21 @@ import {
   Text,
   View,
   TextInput,
-  Image,
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const LoginScreen = () => {
-  const [visibleKeyboard, setVisibleKeyboard] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const navigation = useNavigation();
 
-  const handleChanche = () => {
-    setVisibleKeyboard(true);
-  };
-
   const handleCloseKeyboard = () => {
-    Keyboard.dismiss(), setVisibleKeyboard(false);
+    Keyboard.dismiss();
   };
 
   const handleOnSubmitEditing = () => {
@@ -56,62 +50,58 @@ const LoginScreen = () => {
           resizeMode="cover"
           style={styles.image}
         >
-          <View
-            style={{
-              ...styles.containerForm,
-              ...Platform.select({
-                ios: { height: visibleKeyboard ? 585 : 489 },
-                android: { height: visibleKeyboard ? 560 : 489 },
-              }),
-            }}
+          <KeyboardAvoidingView
+            behavior="padding"
+            style={{ flexGrow: 1, justifyContent: "flex-end" }}
+            keyboardVerticalOffset={-240}
           >
-            <Text style={styles.title}>Увійти</Text>
-            <View style={styles.form}>
-              <View style={styles.marginBottom}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Адреса електронної пошти"
-                  value={email}
-                  onFocus={() => handleChanche()}
-                  onChangeText={setEmail}
-                  onSubmitEditing={handleOnSubmitEditing}
-                />
-              </View>
-              <View>
-                <TextInput
-                  style={styles.input}
-                  placeholder="Пароль"
-                  value={password}
-                  onFocus={() => handleChanche()}
-                  onChangeText={setPassword}
-                  onSubmitEditing={handleOnSubmitEditing}
-                  secureTextEntry={secureTextEntry}
-                />
-                <TouchableOpacity
-                  activeOpacity={0.8}
-                  style={styles.showPassword}
-                  onPress={toggleSecureEntry}
-                >
-                  <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.containerForm}>
+              <Text style={styles.title}>Увійти</Text>
+              <View style={styles.form}>
+                <View style={styles.marginBottom}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Адреса електронної пошти"
+                    value={email}
+                    onChangeText={setEmail}
+                    onSubmitEditing={handleOnSubmitEditing}
+                  />
+                </View>
+                <View>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Пароль"
+                    value={password}
+                    onChangeText={setPassword}
+                    onSubmitEditing={handleOnSubmitEditing}
+                    secureTextEntry={secureTextEntry}
+                  />
+                  <TouchableOpacity
+                    activeOpacity={0.8}
+                    style={styles.showPassword}
+                    onPress={toggleSecureEntry}
+                  >
+                    <Text>{secureTextEntry ? "Показати" : "Сховати"}</Text>
+                  </TouchableOpacity>
+                </View>
 
-              <TouchableOpacity
-                style={styles.btn}
-                activeOpacity={0.8}
-                onPress={() => handleOnSubmitEditing()}
-              >
-                <Text style={styles.btnTitle}>Увійти</Text>
-              </TouchableOpacity>
-              <Text
-                style={styles.link}
-                onPress={() => navigation.navigate("Registration")}
-              >
-                Немає акаунту?{" "}
-                <Text style={styles.linkRegister}>Зареєструватися</Text>
-              </Text>
+                <TouchableOpacity
+                  style={styles.btn}
+                  activeOpacity={0.8}
+                  onPress={() => handleOnSubmitEditing()}
+                >
+                  <Text style={styles.btnTitle}>Увійти</Text>
+                </TouchableOpacity>
+                <Text
+                  style={styles.link}
+                  onPress={() => navigation.navigate("Registration")}
+                >
+                  Немає акаунту?{" "}
+                  <Text style={styles.linkRegister}>Зареєструватися</Text>
+                </Text>
+              </View>
             </View>
-          </View>
+          </KeyboardAvoidingView>
         </ImageBackground>
       </View>
     </TouchableWithoutFeedback>
@@ -130,6 +120,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
+    height: 489,
   },
   form: {
     marginHorizontal: 16,

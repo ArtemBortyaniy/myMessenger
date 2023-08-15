@@ -6,9 +6,9 @@ import RegistrationScreen from "./screens/RegistrationScreen/RegistrationScreen"
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import Home from "./screens/Home/Home";
 import CommentsScreen from "./screens/CommentsScreen/CommentsScreen";
+import MapScreen from "./screens/MapScreen/MapScreen";
 
 const MainStack = createStackNavigator();
-const HomeStack = createStackNavigator();
 
 const App = () => (
   <NavigationContainer>
@@ -28,11 +28,8 @@ const App = () => (
         component={Home}
         options={{ headerShown: false }}
       />
-      <MainStack.Screen
-        name="Кометарі"
-        component={CommentsScreen}
-        // options={{ headerShown: false }}
-      />
+      <MainStack.Screen name="Кометарі" component={CommentsScreen} />
+      <MainStack.Screen name="Карта" component={MapScreen} />
     </MainStack.Navigator>
   </NavigationContainer>
 );

@@ -70,10 +70,15 @@ const PostsScreen = () => {
                   />
                   <Text style={styles.countComments}>{commentsCount}</Text>
                 </TouchableOpacity>
-                <View style={styles.containerLocation}>
-                  <Image source={require("../../assets/img/map-pin.png")} />
-                  <Text style={styles.location}>{location}</Text>
-                </View>
+                <TouchableOpacity
+                  activeOpacity={0.6}
+                  onPress={() => navigation.navigate("Карта")}
+                >
+                  <View style={styles.containerLocation}>
+                    <Image source={require("../../assets/img/map-pin.png")} />
+                    <Text style={styles.location}>{location}</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             </View>
           );
