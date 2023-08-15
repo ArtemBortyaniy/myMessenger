@@ -18,6 +18,7 @@ const CreatePostsScreen = () => {
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [location, setLocation] = useState(null);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -83,6 +84,8 @@ const CreatePostsScreen = () => {
                 if (cameraRef) {
                   const { uri } = await cameraRef.takePictureAsync();
                   await MediaLibrary.createAssetAsync(uri);
+                  setImage(uri);
+                  console.log("image", image);
                 }
               }}
             >
@@ -91,7 +94,6 @@ const CreatePostsScreen = () => {
           </View>
           <View style={styles.flipView}>
             <TouchableOpacity
-              style={styles.flipContainer}
               onPress={() => {
                 setType(
                   type === Camera.Constants.Type.back
