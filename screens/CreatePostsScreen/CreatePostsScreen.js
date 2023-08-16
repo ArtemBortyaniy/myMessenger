@@ -6,6 +6,8 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
@@ -73,7 +75,9 @@ const CreatePostsScreen = () => {
         "photo : ",
         photo
       );
-      navigation.navigate("Posts");
+      // navigation.navigate("Posts");
+      //test
+      navigation.navigate("Map", { location: coords });
       clearPost();
     } catch (error) {
       console.error("Error getting location:", error);
@@ -89,106 +93,112 @@ const CreatePostsScreen = () => {
     setPhoto(null);
   };
 
+  const handleCloseKeyboard = () => {
+    Keyboard.dismiss();
+  };
+
   return (
-    <View style={styles.container}>
-      <View style={[styles.marginHorizontal, styles.marginBottom]}>
-        <View>
-          {!photo ? (
-            <Camera style={styles.camera} type={type} ref={setCameraRef}>
-              <View style={styles.photoView}>
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={async () => {
-                    if (cameraRef) {
-                      const { uri } = await cameraRef.takePictureAsync();
-                      setPhoto(uri);
-                      await MediaLibrary.createAssetAsync(uri);
-                    }
-                  }}
-                >
-                  <View style={styles.takePhotoOut}>
-                    <View style={styles.takePhotoInner}></View>
-                  </View>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.flipContainer}
-                  onPress={() => {
-                    setType(
-                      type === Camera.Constants.Type.back
-                        ? Camera.Constants.Type.front
-                        : Camera.Constants.Type.back
-                    );
-                  }}
-                >
-                  <Text
-                    style={{ fontSize: 18, marginBottom: 10, color: "white" }}
+    <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
+      <View style={styles.container}>
+        <View style={[styles.marginHorizontal, styles.marginBottom]}>
+          <View>
+            {!photo ? (
+              <Camera style={styles.camera} type={type} ref={setCameraRef}>
+                <View style={styles.photoView}>
+                  <TouchableOpacity
+                    style={styles.button}
+                    onPress={async () => {
+                      if (cameraRef) {
+                        const { uri } = await cameraRef.takePictureAsync();
+                        setPhoto(uri);
+                        await MediaLibrary.createAssetAsync(uri);
+                      }
+                    }}
                   >
-                    {" "}
-                    Flip{" "}
-                  </Text>
+                    <View style={styles.takePhotoOut}>
+                      <View style={styles.takePhotoInner}></View>
+                    </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.flipContainer}
+                    onPress={() => {
+                      setType(
+                        type === Camera.Constants.Type.back
+                          ? Camera.Constants.Type.front
+                          : Camera.Constants.Type.back
+                      );
+                    }}
+                  >
+                    <Text
+                      style={{ fontSize: 18, marginBottom: 10, color: "white" }}
+                    >
+                      {" "}
+                      Flip{" "}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </Camera>
+            ) : (
+              <View style={styles.wrapperPhoto}>
+                <Image source={{ uri: photo }} style={styles.imgPost} />
+                <TouchableOpacity
+                  onPress={() => setPhoto(null)}
+                  style={styles.editImg}
+                >
+                  <Image source={require("../../assets/img/group.png")}></Image>
                 </TouchableOpacity>
               </View>
-            </Camera>
-          ) : (
-            <View style={styles.wrapperPhoto}>
-              <Image source={{ uri: photo }} style={styles.imgPost} />
-              <TouchableOpacity
-                onPress={() => setPhoto(null)}
-                style={styles.editImg}
-              >
-                <Image source={require("../../assets/img/group.png")}></Image>
-              </TouchableOpacity>
-            </View>
-          )}
+            )}
+          </View>
+          <Text style={styles.text}>Завантажте фото</Text>
         </View>
-        <Text style={styles.text}>Завантажте фото</Text>
-      </View>
-      <View style={{ ...styles.marginHorizontal, ...styles.marginBottom }}>
+        <View style={{ ...styles.marginHorizontal, ...styles.marginBottom }}>
+          <View>
+            <TextInput
+              placeholder="Назва..."
+              style={{ ...styles.input }}
+              value={titlePost}
+              onChangeText={setTitlePost}
+              onSubmitEditing={handleSubmit}
+            />
+          </View>
+          <View>
+            <TextInput
+              placeholder="Місцевість..."
+              style={{ ...styles.input, ...styles.inputLocation }}
+              value={titleLocation}
+              onChangeText={setTitleLocation}
+              onSubmitEditing={handleSubmit}
+            />
+            <Image
+              source={require("../../assets/img/map-pin.png")}
+              style={styles.imgLocation}
+            />
+          </View>
+        </View>
         <View>
-          <TextInput
-            placeholder="Назва..."
-            style={{ ...styles.input }}
-            value={titlePost}
-            onChangeText={setTitlePost}
-            onSubmitEditing={handleSubmit}
-          />
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={{ ...styles.marginHorizontal, ...styles.btnSubmit }}
+            onPress={handleSubmit}
+            disabled={isLoading}
+          >
+            <Text style={styles.btnText}>
+              {!isLoading ? "Опубліковати" : "Завантаження..."}
+            </Text>
+          </TouchableOpacity>
         </View>
-        <View>
-          <TextInput
-            placeholder="Місцевість..."
-            style={{ ...styles.input, ...styles.inputLocation }}
-            value={titleLocation}
-            onChangeText={setTitleLocation}
-            onSubmitEditing={handleSubmit}
-          />
-          <Image
-            source={require("../../assets/img/map-pin.png")}
-            style={styles.imgLocation}
-          />
+        <View style={styles.clearPost}>
+          <TouchableOpacity
+            activeOpacity={0.5}
+            style={styles.btnClear}
+            onPress={clearPost}
+          >
+            <Image source={require("../../assets/img/clearPost.png")} />
+          </TouchableOpacity>
         </View>
       </View>
-      <View>
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={{ ...styles.marginHorizontal, ...styles.btnSubmit }}
-          onPress={handleSubmit}
-          disabled={isLoading}
-        >
-          <Text style={styles.btnText}>
-            {!isLoading ? "Опубліковати" : "Завантаження..."}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.clearPost}>
-        <TouchableOpacity
-          activeOpacity={0.5}
-          style={styles.btnClear}
-          onPress={clearPost}
-        >
-          <Image source={require("../../assets/img/clearPost.png")} />
-        </TouchableOpacity>
-      </View>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 

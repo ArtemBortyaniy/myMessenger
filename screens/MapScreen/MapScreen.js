@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useRoute } from "@react-navigation/native";
 import { View, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 
 const MapScreen = () => {
+  const route = useRoute();
+  const location = route.params?.location;
   return (
     <View style={styles.container}>
       <MapView
         style={styles.mapStyle}
         region={{
           // ...location, global state
+          ...location,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
