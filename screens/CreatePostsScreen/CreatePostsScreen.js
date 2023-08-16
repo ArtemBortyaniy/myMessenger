@@ -22,6 +22,8 @@ const CreatePostsScreen = () => {
   const [type, setType] = useState(Camera.Constants.Type.back);
   //photo
   const [photo, setPhoto] = useState(null);
+  //loader
+  const [isLoading, setIsLoading] = useState(false);
   //navigation
   const navigation = useNavigation();
 
@@ -55,6 +57,7 @@ const CreatePostsScreen = () => {
   //submit
   const handleSubmit = async () => {
     try {
+      setIsLoading(true);
       let location = await Location.getCurrentPositionAsync({});
       const coords = {
         latitude: location.coords.latitude,
@@ -74,6 +77,8 @@ const CreatePostsScreen = () => {
       clearPost();
     } catch (error) {
       console.error("Error getting location:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -167,8 +172,11 @@ const CreatePostsScreen = () => {
           activeOpacity={0.5}
           style={{ ...styles.marginHorizontal, ...styles.btnSubmit }}
           onPress={handleSubmit}
+          disabled={isLoading}
         >
-          <Text style={styles.btnText}>Опубліковати</Text>
+          <Text style={styles.btnText}>
+            {!isLoading ? "Опубліковати" : "Завантаження..."}
+          </Text>
         </TouchableOpacity>
       </View>
       <View style={styles.clearPost}>
