@@ -14,32 +14,51 @@ import * as Location from "expo-location";
 const CreatePostsScreen = () => {
   const [titlePost, setTitlePost] = useState("");
   const [titleLocation, setTitleLocation] = useState("");
+  const [location, setLocation] = useState(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
-  const [location, setLocation] = useState(null);
-  const [image, setImage] = useState(null);
+  const [photo, setPhoto] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-      }
+  //location
+  const getLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Permission to access location was denied");
+    }
 
-      try {
-        let location = await Location.getCurrentPositionAsync({});
-        const coords = {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-        };
-        setLocation(coords);
-      } catch (error) {
-        console.error("Error getting location:", error);
-      }
-    })();
-  }, [location]);
+    try {
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      setLocation(coords);
+    } catch (error) {
+      console.error("Error getting location:", error);
+    }
+  };
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Permission to access location was denied");
+  //     }
 
+  //     try {
+  //       let location = await Location.getCurrentPositionAsync({});
+  //       const coords = {
+  //         latitude: location.coords.latitude,
+  //         longitude: location.coords.longitude,
+  //       };
+  //       setLocation(coords);
+  //     } catch (error) {
+  //       console.error("Error getting location:", error);
+  //     }
+  //   })();
+  // }, []);
+
+  //camera
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -56,59 +75,73 @@ const CreatePostsScreen = () => {
     return <Text>No access to camera</Text>;
   }
 
+  //submit
   const handleSubmit = () => {
-    console.log(titlePost, titleLocation, location);
+    getLocation();
+    console.log(titlePost, titleLocation, location, photo);
     clearPost();
   };
 
+  //reset
   const clearPost = () => {
     setTitlePost("");
     setTitleLocation("");
     setLocation(null);
+    setPhoto(null);
   };
 
   return (
     <View style={styles.container}>
-      <View
-        style={[
-          styles.marginHorizontal,
-          styles.marginBottom,
-          styles.wrapperCamera,
-        ]}
-      >
-        <Camera style={styles.camera} type={type} ref={setCameraRef}>
-          <View style={styles.photoView}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={async () => {
-                if (cameraRef) {
-                  const { uri } = await cameraRef.takePictureAsync();
-                  await MediaLibrary.createAssetAsync(uri);
-                  setImage(uri);
-                  console.log("image", image);
-                }
-              }}
-            >
-              <Image source={require("../../assets/img/addPhotoPost.png")} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.flipView}>
-            <TouchableOpacity
-              onPress={() => {
-                setType(
-                  type === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                );
-              }}
-            >
-              <Text style={{ fontSize: 18, marginBottom: 10, color: "white" }}>
-                {" "}
-                Flip{" "}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </Camera>
+      <View style={[styles.marginHorizontal, styles.marginBottom]}>
+        <View>
+          {!photo ? (
+            <Camera style={styles.camera} type={type} ref={setCameraRef}>
+              <View style={styles.photoView}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={async () => {
+                    if (cameraRef) {
+                      const { uri } = await cameraRef.takePictureAsync();
+                      setPhoto(uri);
+                      await MediaLibrary.createAssetAsync(uri);
+                    }
+                  }}
+                >
+                  <View style={styles.takePhotoOut}>
+                    <View style={styles.takePhotoInner}></View>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.flipContainer}
+                  onPress={() => {
+                    setType(
+                      type === Camera.Constants.Type.back
+                        ? Camera.Constants.Type.front
+                        : Camera.Constants.Type.back
+                    );
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 18, marginBottom: 10, color: "white" }}
+                  >
+                    {" "}
+                    Flip{" "}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </Camera>
+          ) : (
+            <View style={styles.wrapperPhoto}>
+              <Image source={{ uri: photo }} style={styles.imgPost} />
+              <TouchableOpacity
+                onPress={() => setPhoto(null)}
+                style={styles.editImg}
+              >
+                <Image source={require("../../assets/img/group.png")}></Image>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
         <Text style={styles.text}>Завантажте фото</Text>
       </View>
       <View style={{ ...styles.marginHorizontal, ...styles.marginBottom }}>
@@ -118,6 +151,7 @@ const CreatePostsScreen = () => {
             style={{ ...styles.input }}
             value={titlePost}
             onChangeText={setTitlePost}
+            onSubmitEditing={handleSubmit}
           />
         </View>
         <View>
@@ -126,6 +160,7 @@ const CreatePostsScreen = () => {
             style={{ ...styles.input, ...styles.inputLocation }}
             value={titleLocation}
             onChangeText={setTitleLocation}
+            onSubmitEditing={handleSubmit}
           />
           <Image
             source={require("../../assets/img/map-pin.png")}
@@ -137,6 +172,7 @@ const CreatePostsScreen = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           style={{ ...styles.marginHorizontal, ...styles.btnSubmit }}
+          // onPress={handleSubmit}
           onPress={handleSubmit}
         >
           <Text style={styles.btnText}>Опубліковати</Text>
@@ -162,26 +198,46 @@ const styles = StyleSheet.create({
     paddingTop: 32,
     backgroundColor: "#FFFFFF",
   },
-  wrapperCamera: {
-    borderRadius: 8,
-  },
   camera: {
     width: "100%",
     height: 240,
     borderRadius: 8,
   },
-  photoView: {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: [{ translateX: -27 }, { translateY: -40 }],
-  },
-  flipView: {
-    flex: 1,
-    justifyContent: "flex-end",
+  button: { alignItems: "center", marginTop: 180 },
+  takePhotoOut: {
+    borderWidth: 2,
+    borderColor: "white",
+    height: 50,
+    width: 50,
+    display: "flex",
+    justifyContent: "center",
     alignItems: "center",
+    borderRadius: 50,
   },
-  button: {},
+  takePhotoInner: {
+    borderWidth: 2,
+    borderColor: "white",
+    height: 40,
+    width: 40,
+    backgroundColor: "white",
+    borderRadius: 50,
+  },
+  wrapperPhoto: {},
+  imgPost: {
+    width: "100%",
+    height: 240,
+    borderRadius: 8,
+  },
+  flipContainer: {
+    position: "absolute",
+    bottom: "2%",
+    left: "2%",
+  },
+  editImg: {
+    position: "absolute",
+    left: "42%",
+    top: "38%",
+  },
   marginHorizontal: {
     marginHorizontal: 16,
   },

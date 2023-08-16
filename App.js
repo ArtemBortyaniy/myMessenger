@@ -2,16 +2,17 @@ import React from "react";
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { Image, TouchableOpacity, View, Text } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useNavigation } from "@react-navigation/native";
+
 import RegistrationScreen from "./screens/RegistrationScreen/RegistrationScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import CommentsScreen from "./screens/CommentsScreen/CommentsScreen";
 import MapScreen from "./screens/MapScreen/MapScreen";
-import { Image, TouchableOpacity, View, Text } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import CreatePostsScreen from "./screens/CreatePostsScreen/CreatePostsScreen";
 import PostsScreen from "./screens/PostsScreen/PostsScreen";
 import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
-import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
@@ -41,6 +42,8 @@ const App = () => (
 );
 
 export default App;
+
+//Bottom Tabs
 
 function Home() {
   return (
@@ -105,6 +108,8 @@ function Home() {
     </Tab.Navigator>
   );
 }
+
+//components header Bottom Tabs
 
 export const GoBack = () => {
   const navigation = useNavigation();
