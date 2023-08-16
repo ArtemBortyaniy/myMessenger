@@ -10,53 +10,30 @@ import {
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
+import { useNavigation } from "@react-navigation/native";
 
 const CreatePostsScreen = () => {
+  //inputs
   const [titlePost, setTitlePost] = useState("");
   const [titleLocation, setTitleLocation] = useState("");
-  const [location, setLocation] = useState(null);
+  //camera
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraRef, setCameraRef] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  //photo
   const [photo, setPhoto] = useState(null);
+  //navigation
+  const navigation = useNavigation();
 
   //location
-  const getLocation = async () => {
-    let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== "granted") {
-      console.log("Permission to access location was denied");
-    }
-
-    try {
-      let location = await Location.getCurrentPositionAsync({});
-      const coords = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
-      setLocation(coords);
-    } catch (error) {
-      console.error("Error getting location:", error);
-    }
-  };
-  // useEffect(() => {
-  //   (async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access location was denied");
-  //     }
-
-  //     try {
-  //       let location = await Location.getCurrentPositionAsync({});
-  //       const coords = {
-  //         latitude: location.coords.latitude,
-  //         longitude: location.coords.longitude,
-  //       };
-  //       setLocation(coords);
-  //     } catch (error) {
-  //       console.error("Error getting location:", error);
-  //     }
-  //   })();
-  // }, []);
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+      }
+    })();
+  }, []);
 
   //camera
   useEffect(() => {
@@ -76,17 +53,34 @@ const CreatePostsScreen = () => {
   }
 
   //submit
-  const handleSubmit = () => {
-    getLocation();
-    console.log(titlePost, titleLocation, location, photo);
-    clearPost();
+  const handleSubmit = async () => {
+    try {
+      let location = await Location.getCurrentPositionAsync({});
+      const coords = {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+      console.log(
+        "titlePost : ",
+        titlePost,
+        "titleLocation : ",
+        titleLocation,
+        "location : ",
+        coords,
+        "photo : ",
+        photo
+      );
+      navigation.navigate("Posts");
+      clearPost();
+    } catch (error) {
+      console.error("Error getting location:", error);
+    }
   };
 
   //reset
   const clearPost = () => {
     setTitlePost("");
     setTitleLocation("");
-    setLocation(null);
     setPhoto(null);
   };
 
@@ -172,7 +166,6 @@ const CreatePostsScreen = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           style={{ ...styles.marginHorizontal, ...styles.btnSubmit }}
-          // onPress={handleSubmit}
           onPress={handleSubmit}
         >
           <Text style={styles.btnText}>Опубліковати</Text>

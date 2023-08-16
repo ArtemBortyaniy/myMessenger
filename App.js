@@ -6,6 +6,7 @@ import { Image, TouchableOpacity, View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 
+//components
 import RegistrationScreen from "./screens/RegistrationScreen/RegistrationScreen";
 import LoginScreen from "./screens/LoginScreen/LoginScreen";
 import CommentsScreen from "./screens/CommentsScreen/CommentsScreen";
@@ -37,6 +38,7 @@ const App = () => (
       />
       <MainStack.Screen name="Comments" component={CommentsScreen} />
       <MainStack.Screen name="Map" component={MapScreen} />
+      <MainStack.Screen name="Posts" component={PostsScreen} />
     </MainStack.Navigator>
   </NavigationContainer>
 );
