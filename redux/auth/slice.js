@@ -1,24 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { registerDB } from "./operations";
 
-const initialState = {
-  user: { name: null, email: null, userID: null },
-  token: null,
-  isLoggedIn: false,
-  isRefreshing: false,
-};
-
-const authSlice = createSlice({
+export const authSlice = createSlice({
   name: "auth",
-  initialState: initialState,
-  extraReducers: {
-    //register
-    [registerDB.fulfilled](state, action) {
-      state.user.email = action.payload.user.email;
-      state.user.name = action.payload.user.name;
-      state.token = action.payload.user.idToken;
-      state.isLoggedIn = true;
-    },
+  initialState: {
+    userId: null,
+    name: null,
+    email: null,
+    image: null,
+    stateChange: null,
+  },
+  reducers: {
+    updateUserProfile: (state, { payload }) => ({
+      ...state,
+      userId: payload.userId,
+      name: payload.name,
+      email: payload.email,
+      image: payload.image,
+    }),
+    authStateChange: (state, { payload }) => ({
+      ...state,
+      stateChange: payload.stateChange,
+    }),
   },
 });
 

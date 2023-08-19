@@ -27,14 +27,9 @@ const LoginScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
-    if (email === "" || password === "") {
-      alert("Заповніть усі поля");
-      return;
-    }
     dispatch(loginDB({ email, password }));
     handleCloseKeyboard();
     reset();
-    navigation.navigate("Home");
   };
 
   const reset = () => {

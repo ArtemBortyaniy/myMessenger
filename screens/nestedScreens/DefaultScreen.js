@@ -40,7 +40,7 @@ export const data = [
   },
 ];
 
-const PostsScreen = () => {
+const DefaultScreen = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
@@ -159,4 +159,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PostsScreen;
+export default DefaultScreen;

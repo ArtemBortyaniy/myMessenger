@@ -15,41 +15,36 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistor } from "./redux/store";
 
 //components
-import RegistrationScreen from "./screens/RegistrationScreen/RegistrationScreen";
-import LoginScreen from "./screens/LoginScreen/LoginScreen";
-import CommentsScreen from "./screens/CommentsScreen/CommentsScreen";
-import MapScreen from "./screens/MapScreen/MapScreen";
-import CreatePostsScreen from "./screens/CreatePostsScreen/CreatePostsScreen";
-import PostsScreen from "./screens/PostsScreen/PostsScreen";
-import ProfileScreen from "./screens/ProfileScreen/ProfileScreen";
+import RegistrationScreen from "./screens/auth/RegistrationScreen";
+import LoginScreen from "./screens/auth/LoginScreen";
+import CreatePostsScreen from "./screens/mainScreens/CreatePostsScreen";
+import PostsScreen from "./screens/mainScreens/PostsScreen";
+import ProfileScreen from "./screens/mainScreens/ProfileScreen";
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
+const user = true;
 
 const App = () => (
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
       <NavigationContainer>
-        <MainStack.Navigator initialRouteName="Login">
-          <MainStack.Screen
-            name="Registration"
-            component={RegistrationScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="Login"
-            component={LoginScreen}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen
-            name="Home"
-            component={Home}
-            options={{ headerShown: false }}
-          />
-          <MainStack.Screen name="Comments" component={CommentsScreen} />
-          <MainStack.Screen name="Map" component={MapScreen} />
-          <MainStack.Screen name="Posts" component={PostsScreen} />
-        </MainStack.Navigator>
+        {user ? (
+          <MainStack.Navigator initialRouteName="Login">
+            <MainStack.Screen
+              name="Registration"
+              component={RegistrationScreen}
+              options={{ headerShown: false }}
+            />
+            <MainStack.Screen
+              name="Login"
+              component={LoginScreen}
+              options={{ headerShown: false }}
+            />
+          </MainStack.Navigator>
+        ) : (
+          <Home />
+        )}
       </NavigationContainer>
     </PersistGate>
   </Provider>

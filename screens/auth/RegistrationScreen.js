@@ -14,7 +14,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
-import { registerDB } from "../../redux/auth/operations";
+import { registerDB, updateUserProfile } from "../../redux/auth/operations";
 
 const RegistrationScreen = () => {
   const [name, setName] = useState("");
@@ -30,15 +30,11 @@ const RegistrationScreen = () => {
     Keyboard.dismiss();
   };
 
-  const handleOnSubmitEditing = () => {
-    if (name === "" || email === "" || password === "") {
-      alert("Заповніть усі поля");
-      return;
-    }
+  const handleOnSubmitEditing = async () => {
     handleCloseKeyboard();
+    await dispatch(registerDB({ email, password }));
+    dispatch(updateUserProfile({ name, image }));
     reset();
-    dispatch(registerDB({ email, password, name }));
-    navigation.navigate("Home");
   };
 
   const reset = () => {
