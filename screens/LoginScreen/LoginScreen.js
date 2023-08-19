@@ -11,12 +11,16 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { loginDB } from "../../redux/auth/operations";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
+
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const handleCloseKeyboard = () => {
     Keyboard.dismiss();
@@ -27,9 +31,9 @@ const LoginScreen = () => {
       alert("Заповніть усі поля");
       return;
     }
+    dispatch(loginDB({ email, password }));
     handleCloseKeyboard();
     reset();
-    console.log({ email, password });
     navigation.navigate("Home");
   };
 

@@ -1,10 +1,18 @@
 import React from "react";
+import { Image, TouchableOpacity, View, Text } from "react-native";
+//navigation
 import "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Image, TouchableOpacity, View, Text } from "react-native";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
+//bottom tabs
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+//store
+import { Provider } from "react-redux";
+import { store } from "./redux/store";
+//persistor
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor } from "./redux/store";
 
 //components
 import RegistrationScreen from "./screens/RegistrationScreen/RegistrationScreen";
@@ -19,28 +27,32 @@ const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
 const App = () => (
-  <NavigationContainer>
-    <MainStack.Navigator initialRouteName="Login">
-      <MainStack.Screen
-        name="Registration"
-        component={RegistrationScreen}
-        options={{ headerShown: false }}
-      />
-      <MainStack.Screen
-        name="Login"
-        component={LoginScreen}
-        options={{ headerShown: false }}
-      />
-      <MainStack.Screen
-        name="Home"
-        component={Home}
-        options={{ headerShown: false }}
-      />
-      <MainStack.Screen name="Comments" component={CommentsScreen} />
-      <MainStack.Screen name="Map" component={MapScreen} />
-      <MainStack.Screen name="Posts" component={PostsScreen} />
-    </MainStack.Navigator>
-  </NavigationContainer>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <NavigationContainer>
+        <MainStack.Navigator initialRouteName="Login">
+          <MainStack.Screen
+            name="Registration"
+            component={RegistrationScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen
+            name="Home"
+            component={Home}
+            options={{ headerShown: false }}
+          />
+          <MainStack.Screen name="Comments" component={CommentsScreen} />
+          <MainStack.Screen name="Map" component={MapScreen} />
+          <MainStack.Screen name="Posts" component={PostsScreen} />
+        </MainStack.Navigator>
+      </NavigationContainer>
+    </PersistGate>
+  </Provider>
 );
 
 export default App;

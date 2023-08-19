@@ -9,37 +9,40 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
-  Platform,
   KeyboardAvoidingView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { registerDB } from "../../redux/auth/operations";
 
 const RegistrationScreen = () => {
-  const [login, setLogin] = useState("");
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [image, setImage] = useState(null);
+
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const handleCloseKeyboard = () => {
     Keyboard.dismiss();
   };
 
   const handleOnSubmitEditing = () => {
-    if (login === "" || email === "" || password === "") {
+    if (name === "" || email === "" || password === "") {
       alert("Заповніть усі поля");
       return;
     }
     handleCloseKeyboard();
     reset();
-    console.log({ image, login, email, password });
+    dispatch(registerDB({ email, password, name }));
     navigation.navigate("Home");
   };
 
   const reset = () => {
-    setLogin("");
+    setName("");
     setEmail("");
     setPassword("");
     setImage(null);
@@ -108,8 +111,8 @@ const RegistrationScreen = () => {
                   <TextInput
                     style={styles.input}
                     placeholder="Логін"
-                    value={login}
-                    onChangeText={setLogin}
+                    value={name}
+                    onChangeText={setName}
                     onSubmitEditing={handleOnSubmitEditing}
                   />
                 </View>
