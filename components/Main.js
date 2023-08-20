@@ -8,7 +8,7 @@ import { stateChangedUser } from "../redux/auth/operations";
 import { NavigationContainer } from "@react-navigation/native";
 
 //HOOK routers
-import useRoute from "./router";
+import useRoute from "../router";
 
 const Main = () => {
   const { stateChange } = useSelector((state) => state.auth);

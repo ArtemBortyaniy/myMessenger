@@ -8,16 +8,16 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 //components
-import RegistrationScreen from "../screens/auth/RegistrationScreen";
-import LoginScreen from "../screens/auth/LoginScreen";
-import CreatePostsScreen from "../screens/mainScreens/CreatePostsScreen";
-import PostsScreen from "../screens/mainScreens/PostsScreen";
-import ProfileScreen from "../screens/mainScreens/ProfileScreen";
+import RegistrationScreen from "./screens/auth/RegistrationScreen";
+import LoginScreen from "./screens/auth/LoginScreen";
+import CreatePostsScreen from "./screens/mainScreens/CreatePostsScreen";
+import PostsScreen from "./screens/mainScreens/PostsScreen";
+import ProfileScreen from "./screens/mainScreens/ProfileScreen";
 
 //Bottom Tabs components
-import { GoBack } from "./GoBack";
-import { HeaderLogOut } from "./HeaderLogOut";
-import { HeaderTitle } from "./HeaderTitle";
+import { GoBack } from "./components/GoBack";
+import { HeaderLogOut } from "./components/HeaderLogOut";
+import { HeaderTitle } from "./components/HeaderTitle";
 
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
