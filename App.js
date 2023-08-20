@@ -6,7 +6,7 @@ import { store } from "./redux/store";
 
 //persistor
 import { PersistGate } from "redux-persist/integration/react";
-import { persistor } from "../redux/store";
+import { persistor } from "./redux/store";
 
 //component
 import Main from "./components/Main";
