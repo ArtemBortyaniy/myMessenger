@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useSelector } from "react-redux";
 
 export const data = [
   {
@@ -42,18 +43,25 @@ export const data = [
 
 const DefaultScreen = () => {
   const navigation = useNavigation();
+  const user = useSelector((state) => state.auth);
+
   return (
     <View style={styles.container}>
       <View style={styles.containerUser}>
         <View style={styles.photoUser}>
-          <Image source={require("../../assets/img/rectangle.png")} />
+          {user.image && (
+            <Image
+              source={{ uri: user.image }}
+              style={{ width: 60, height: 60, borderRadius: 16 }}
+            />
+          )}
         </View>
         <View style={styles.infoUser}>
-          <Text style={styles.nameUser}>Natali Romanova</Text>
-          <Text style={styles.emailUser}>email@example.com</Text>
+          <Text style={styles.nameUser}>{user.name}</Text>
+          <Text style={styles.emailUser}>{user.email}</Text>
         </View>
       </View>
-      <ScrollView style={styles.containerPosts}>
+      <ScrollView>
         {data.map(({ id, img, title, commentsCount, location }) => {
           return (
             <View style={styles.item} key={id}>

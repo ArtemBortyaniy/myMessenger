@@ -1,12 +1,15 @@
-import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity, Image } from "react-native";
+import { useDispatch } from "react-redux";
+import { authSignOutUser } from "../redux/auth/operations";
 
 export const HeaderLogOut = () => {
-  const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   return (
     <TouchableOpacity
       activeOpacity={0.8}
       style={{ marginRight: 10, marginBottom: 10 }}
-      onPress={() => navigation.navigate("Login")}
+      onPress={() => dispatch(authSignOutUser())}
     >
       <Image source={require("../assets/img/log-out.png")} />
     </TouchableOpacity>

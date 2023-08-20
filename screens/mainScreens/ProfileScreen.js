@@ -10,6 +10,9 @@ import {
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { authSignOutUser, updateUserPhoto } from "../../redux/auth/operations";
+import { useSelector } from "react-redux";
 
 export const data = [
   {
@@ -47,9 +50,9 @@ export const data = [
 ];
 
 const ProfileScreen = () => {
-  const [image, setImage] = useState(null);
-
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -60,7 +63,8 @@ const ProfileScreen = () => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      // setImage(result.assets[0].uri);
+      dispatch(updateUserPhoto(result.assets[0].uri));
     }
   };
 
@@ -75,16 +79,17 @@ const ProfileScreen = () => {
           <TouchableOpacity
             activeOpacity={0.8}
             style={styles.logOut}
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => dispatch(authSignOutUser())}
           >
             <Image source={require("../../assets/img/log-out.png")} />
           </TouchableOpacity>
           <View style={styles.wrapperPhoto}>
             <View style={styles.containerPhoto}>
-              {image && (
-                <Image source={{ uri: image }} style={styles.imageUser} />
+              {user.image && (
+                <Image source={{ uri: user.image }} style={styles.imageUser} />
               )}
-              {!image ? (
+              {user.image ===
+              "https://sneg.top/uploads/posts/2023-06/1687881723_sneg-top-p-avatarka-yuzer-vkontakte-2.jpg" ? (
                 <TouchableOpacity activeOpacity={0.8} onPress={pickImage}>
                   <Image
                     source={require("../../assets/img/add.png")}
@@ -94,7 +99,13 @@ const ProfileScreen = () => {
               ) : (
                 <TouchableOpacity
                   activeOpacity={0.8}
-                  onPress={() => setImage(null)}
+                  onPress={() =>
+                    dispatch(
+                      updateUserPhoto(
+                        "https://sneg.top/uploads/posts/2023-06/1687881723_sneg-top-p-avatarka-yuzer-vkontakte-2.jpg"
+                      )
+                    )
+                  }
                 >
                   <Image
                     source={require("../../assets/img/delete.png")}
@@ -201,7 +212,7 @@ const styles = StyleSheet.create({
   btnAdd: {
     position: "absolute",
     right: -12,
-    top: 81,
+    top: -39,
     width: 25,
     height: 25,
   },

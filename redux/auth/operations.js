@@ -3,13 +3,14 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   updateProfile,
+  signOut,
 } from "firebase/auth";
 import { auth } from "../../firebase/config";
 import { authSlice } from "./slice";
 
 export const registerDB =
   ({ email, password }) =>
-  async (dispatch, getState) => {
+  async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
     } catch (error) {
@@ -47,10 +48,9 @@ export const updateUserProfile =
 
 export const loginDB =
   ({ email, password }) =>
-  async (dispatch) => {
+  async () => {
     try {
-      const user = await signInWithEmailAndPassword(auth, email, password);
-      console.log(user);
+      await signInWithEmailAndPassword(auth, email, password);
     } catch (error) {
       throw error;
     }
@@ -60,14 +60,41 @@ export const stateChangedUser = () => async (dispatch, getState) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
       const userUpdateProfile = {
-        userId: uid,
-        name: displayName,
-        email: email,
-        image: photoURL,
+        userId: user.uid,
+        name: user.displayName,
+        email: user.email,
+        image: user.photoURL,
       };
 
       dispatch(authSlice.actions.authStateChange({ stateChange: true }));
       dispatch(authSlice.actions.updateUserProfile(userUpdateProfile));
     }
   });
+};
+
+export const authSignOutUser = () => async (dispatch) => {
+  await signOut(auth);
+  dispatch(authSlice.actions.authSignOut());
+};
+
+export const updateUserPhoto = (image) => async (dispatch, getState) => {
+  const user = auth.currentUser;
+  console.log(image);
+  if (user) {
+    try {
+      await updateProfile(user, {
+        photoURL: image,
+      });
+
+      const { photoURL } = auth.currentUser;
+
+      const userUpdateProfile = {
+        image: photoURL,
+      };
+
+      dispatch(authSlice.actions.updatePhoto(userUpdateProfile));
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 };

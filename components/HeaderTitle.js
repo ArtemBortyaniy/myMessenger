@@ -1,3 +1,5 @@
+import { Text, View } from "react-native";
+
 export const HeaderTitle = ({ title }) => (
   <View
     style={{

@@ -12,6 +12,7 @@ import useRoute from "../router";
 
 const Main = () => {
   const { stateChange } = useSelector((state) => state.auth);
+
   const dispatch = useDispatch();
 
   useEffect(() => {

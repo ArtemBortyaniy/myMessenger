@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
   imgLocation: {
     position: "absolute",
     left: 0,
-    top: 13,
+    top: 19,
     width: 24,
     height: 24,
   },

@@ -1,0 +1,14 @@
+// {
+//   "compilerOptions": {
+//     "moduleResolution": "bundler",
+//     "module": "ESNext",
+//     "target": "ESNext",
+//     "lib": ["ESNext"],
+//     "checkJs": true,
+//     "jsx": "react-native",
+//     "strict": false,
+//     "noEmit": true
+//   },
+//   "include": ["*"],
+//   "exclude": ["node_modules"]
+// }
