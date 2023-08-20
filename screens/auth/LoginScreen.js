@@ -27,9 +27,10 @@ const LoginScreen = () => {
   };
 
   const handleOnSubmitEditing = () => {
+    console.log(email, password);
     dispatch(loginDB({ email, password }));
     handleCloseKeyboard();
-    reset();
+    // reset();
   };
 
   const reset = () => {

@@ -7,7 +7,7 @@ export const authSlice = createSlice({
     name: null,
     email: null,
     image: null,
-    stateChange: null,
+    stateChange: false,
   },
   reducers: {
     updateUserProfile: (state, { payload }) => ({

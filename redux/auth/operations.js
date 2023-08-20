@@ -24,12 +24,12 @@ export const updateUserProfile =
 
     if (user) {
       try {
-        await updateProfile({
+        await updateProfile(user, {
           displayName: name,
           photoURL: image,
         });
 
-        const { displayName, uid, email, photoURL } = await auth.currentUser;
+        const { displayName, uid, email, photoURL } = auth.currentUser;
 
         const userUpdateProfile = {
           userId: uid,
@@ -44,3 +44,30 @@ export const updateUserProfile =
       }
     }
   };
+
+export const loginDB =
+  ({ email, password }) =>
+  async (dispatch) => {
+    try {
+      const user = await signInWithEmailAndPassword(auth, email, password);
+      console.log(user);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+export const stateChangedUser = () => async (dispatch, getState) => {
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      const userUpdateProfile = {
+        userId: uid,
+        name: displayName,
+        email: email,
+        image: photoURL,
+      };
+
+      dispatch(authSlice.actions.authStateChange({ stateChange: true }));
+      dispatch(authSlice.actions.updateUserProfile(userUpdateProfile));
+    }
+  });
+};

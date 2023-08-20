@@ -15,6 +15,13 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { registerDB, updateUserProfile } from "../../redux/auth/operations";
+// import { useSelector } from "react-redux";
+// import {
+//   selectUseUserEmail,
+//   selectUseUserId,
+//   selectUseUserPhoto,
+//   selectUseUserName,
+// } from "../../redux/auth/selectors";
 
 const RegistrationScreen = () => {
   const [name, setName] = useState("");
@@ -22,6 +29,12 @@ const RegistrationScreen = () => {
   const [password, setPassword] = useState("");
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const [image, setImage] = useState(null);
+
+  // const userName = useSelector(selectUseUserName);
+  // const userPhoto = useSelector(selectUseUserPhoto);
+  // const userId = useSelector(selectUseUserId);
+  // const userEmail = useSelector(selectUseUserEmail);
+  // console.log(userName, userPhoto, userId, userEmail);
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -32,7 +45,7 @@ const RegistrationScreen = () => {
 
   const handleOnSubmitEditing = async () => {
     handleCloseKeyboard();
-    await dispatch(registerDB({ email, password }));
+    dispatch(registerDB({ email, password }));
     dispatch(updateUserProfile({ name, image }));
     reset();
   };
