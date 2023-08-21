@@ -24,6 +24,20 @@ const Error = () => {
   });
 };
 
+const Successful = () => {
+  Toast.show({
+    type: "success",
+    text1: "Successful",
+  });
+};
+
+const Goodbye = () => {
+  Toast.show({
+    type: "success",
+    text1: "Goodbye",
+  });
+};
+
 export const registerDB =
   ({ email, password }) =>
   async () => {
@@ -95,6 +109,7 @@ export const stateChangedUser = () => async (dispatch, getState) => {
 export const authSignOutUser = () => async (dispatch) => {
   await signOut(auth);
   dispatch(authSlice.actions.authSignOut());
+  Goodbye();
 };
 
 export const updateUserPhoto = (image) => async (dispatch, getState) => {
@@ -113,6 +128,7 @@ export const updateUserPhoto = (image) => async (dispatch, getState) => {
       };
 
       dispatch(authSlice.actions.updatePhoto(userUpdateProfile));
+      Successful();
     } catch (error) {
       console.log(error.message);
     }

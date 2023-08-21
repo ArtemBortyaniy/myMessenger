@@ -14,6 +14,11 @@ import { useDispatch } from "react-redux";
 import { authSignOutUser, updateUserPhoto } from "../../redux/auth/operations";
 import { useSelector } from "react-redux";
 
+//storage image
+import { storage } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { uriToBlob } from "../../utils/uriToBlob";
+
 export const data = [
   {
     id: 1,
@@ -64,7 +69,31 @@ const ProfileScreen = () => {
 
     if (!result.canceled) {
       // setImage(result.assets[0].uri);
-      dispatch(updateUserPhoto(result.assets[0].uri));
+      // dispatch(updateUserPhoto(result.assets[0].uri));
+      const asset = result.assets[0];
+
+      photoLink = await uploadPhotoToServer({
+        uri: asset.uri,
+        mimeType: asset.uri.split(".").pop(),
+      });
+      console.debug(photoLink);
+      dispatch(updateUserPhoto(photoLink));
+    }
+  };
+
+  const uploadPhotoToServer = async ({ uri, mimeType }) => {
+    const uniqueIdUserAvatar = Date.now().toString();
+    const fileRef = ref(
+      storage,
+      `userAvatar/${uniqueIdUserAvatar}.${mimeType}`
+    );
+
+    try {
+      const blob = await uriToBlob(uri);
+      const uploadedFile = await uploadBytes(fileRef, blob);
+      return await getDownloadURL(uploadedFile.ref);
+    } catch (error) {
+      console.debug(error);
     }
   };
 

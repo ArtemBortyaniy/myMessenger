@@ -15,8 +15,11 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { registerDB, updateUserProfile } from "../../redux/auth/operations";
-import { db } from "../../firebase/config";
+
+//storage image
 import { storage } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { uriToBlob } from "../../utils/uriToBlob";
 
 //svg
 import AddUserPhoto from "../../assets/svg/addPhotoUser.svg";
@@ -63,19 +66,31 @@ const RegistrationScreen = () => {
 
     if (!result.canceled) {
       // setImage(result.assets[0].uri);
-      photoLink = await uploadPhotoToServer(result.assets[0].uri);
+      const asset = result.assets[0];
+
+      photoLink = await uploadPhotoToServer({
+        uri: asset.uri,
+        mimeType: asset.uri.split(".").pop(),
+      });
+      console.debug(photoLink);
+      setImage(photoLink);
     }
   };
 
-  const uploadPhotoToServer = async (image) => {
+  const uploadPhotoToServer = async ({ uri, mimeType }) => {
     const uniqueIdUserAvatar = Date.now().toString();
-    const response = await fetch(image);
-    const file = await response.blob();
+    const fileRef = ref(
+      storage,
+      `userAvatar/${uniqueIdUserAvatar}.${mimeType}`
+    );
 
-    const data = await storage()
-      .ref(storage`userAvatar/${uniqueIdUserAvatar}`)
-      .put(file);
-    console.log(data);
+    try {
+      const blob = await uriToBlob(uri);
+      const uploadedFile = await uploadBytes(fileRef, blob);
+      return await getDownloadURL(uploadedFile.ref);
+    } catch (error) {
+      console.debug(error);
+    }
   };
 
   return (
@@ -117,7 +132,7 @@ const RegistrationScreen = () => {
                   )}
                 </View>
               </View>
-              <AddUserPhoto width={25} height={25} />
+              {/* <AddUserPhoto styles={{ width: 25, height: 25 }} /> */}
               <Text style={styles.title}>Реєстрація</Text>
               <View style={styles.form}>
                 <View style={styles.marginBottom}>

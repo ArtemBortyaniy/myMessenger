@@ -12,15 +12,12 @@ import "firebase/storage";
 import "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAcW-lb4-7k7AQ76wQo0p7PqmcSheeva3Q",
-  authDomain: "rn-social-9f0b1.firebaseapp.com",
-  databaseURL:
-    "https://rn-social-9f0b1-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "rn-social-9f0b1",
-  storageBucket: "rn-social-9f0b1.appspot.com",
-  messagingSenderId: "766123363814",
-  appId: "1:766123363814:web:bb9de15888e39f5ee81a27",
-  measurementId: "G-09EYWRB9G0",
+  apiKey: "AIzaSyAtFmc2mDRwvucyRXlHvVHB_pjWTJTEW2Q",
+  authDomain: "rn-social-a76db.firebaseapp.com",
+  projectId: "rn-social-a76db",
+  storageBucket: "rn-social-a76db.appspot.com",
+  messagingSenderId: "350429280272",
+  appId: "1:350429280272:web:693213be96e5066a747295",
 };
 
 const app = initializeApp(firebaseConfig);

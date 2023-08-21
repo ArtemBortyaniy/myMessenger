@@ -14,6 +14,15 @@ import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { useNavigation } from "@react-navigation/native";
 
+//storage image
+import { storage } from "../../firebase/config";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { uriToBlob } from "../../utils/uriToBlob";
+
+//creacte post
+import { useSelector, useDispatch } from "react-redux";
+import { writeDataToFirestore } from "../../redux/posts/operations";
+
 const CreatePostsScreen = () => {
   //inputs
   const [titlePost, setTitlePost] = useState("");
@@ -28,6 +37,10 @@ const CreatePostsScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
   //navigation
   const navigation = useNavigation();
+  //userId
+  const { userId } = useSelector((state) => state.auth);
+  //dispath
+  const dispath = useDispatch();
 
   //location
   useEffect(() => {
@@ -61,23 +74,32 @@ const CreatePostsScreen = () => {
     try {
       setIsLoading(true);
       let location = await Location.getCurrentPositionAsync({});
-      const coords = {
+      const cords = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       };
-      console.log(
-        "titlePost : ",
-        titlePost,
-        "titleLocation : ",
-        titleLocation,
-        "location : ",
-        coords,
-        "photo : ",
-        photo
+      // console.log(
+      //   "titlePost : ",
+      //   titlePost,
+      //   "titleLocation : ",
+      //   titleLocation,
+      //   "location : ",
+      //   coords,
+      //   "photo : ",
+      //   photo,
+      //   "userId : ",
+      //   userId
+      // );
+      dispath(
+        writeDataToFirestore({
+          imgPost,
+          titlePost,
+          titleLocation,
+          cords,
+          userId,
+        })
       );
       // navigation.navigate("Posts");
-      //test
-      navigation.navigate("Map", { location: coords });
       clearPost();
     } catch (error) {
       console.error("Error getting location:", error);
@@ -97,6 +119,19 @@ const CreatePostsScreen = () => {
     Keyboard.dismiss();
   };
 
+  const uploadPhotoToServer = async ({ uri, mimeType }) => {
+    const uniqueIdUserAvatar = Date.now().toString();
+    const fileRef = ref(storage, `userPosts/${uniqueIdUserAvatar}.${mimeType}`);
+
+    try {
+      const blob = await uriToBlob(uri);
+      const uploadedFile = await uploadBytes(fileRef, blob);
+      return await getDownloadURL(uploadedFile.ref);
+    } catch (error) {
+      console.debug(error);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
       <View style={styles.container}>
@@ -110,8 +145,15 @@ const CreatePostsScreen = () => {
                     onPress={async () => {
                       if (cameraRef) {
                         const { uri } = await cameraRef.takePictureAsync();
-                        setPhoto(uri);
-                        await MediaLibrary.createAssetAsync(uri);
+
+                        const asset = uri;
+
+                        photoLink = await uploadPhotoToServer({
+                          uri: asset,
+                          mimeType: asset.split(".").pop(),
+                        });
+                        console.debug(photoLink);
+                        setPhoto(photoLink);
                       }
                     }}
                   >
@@ -310,38 +352,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreatePostsScreen;
-
-{
-  /* <View style={{ ...styles.marginHorizontal, ...styles.marginBottom }}>
-  {!image ? (
-    <>
-      <TouchableOpacity
-        style={styles.imgPost}
-        onPress={pickImage}
-        activeOpacity={0.6}
-      >
-        <Image
-          source={require("../../assets/img/addPhotoPost.png")}
-          onPress={pickImage}
-        />
-      </TouchableOpacity>
-      <Text style={styles.text}>Завантажте фото</Text>
-    </>
-  ) : (
-    <>
-      <TouchableOpacity
-        activeOpacity={0.6}
-        onPress={pickImage}
-        style={styles.imgPost}
-      >
-        <Image source={{ uri: image }} style={styles.changePhoto} />
-        <Image
-          source={require("../../assets/img/group.png")}
-          style={styles.editImg}
-        ></Image>
-      </TouchableOpacity>
-      <Text style={styles.text}>Редагувати фото</Text>
-    </>
-  )}
-</View>; */
-}
