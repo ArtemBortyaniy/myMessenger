@@ -1,3 +1,4 @@
+import Toast from "react-native-toast-message";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -8,12 +9,29 @@ import {
 import { auth } from "../../firebase/config";
 import { authSlice } from "./slice";
 
+//notification
+const Greetings = () => {
+  Toast.show({
+    type: "success",
+    text1: "Hello",
+  });
+};
+
+const Error = () => {
+  Toast.show({
+    type: "error",
+    text1: "Oooopsss...",
+  });
+};
+
 export const registerDB =
   ({ email, password }) =>
   async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+      Greetings();
     } catch (error) {
+      Error();
       console.log(error.message);
     }
   };
@@ -51,8 +69,10 @@ export const loginDB =
   async () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      Greetings();
     } catch (error) {
-      throw error;
+      Error();
+      console.log(error.message);
     }
   };
 
@@ -79,7 +99,7 @@ export const authSignOutUser = () => async (dispatch) => {
 
 export const updateUserPhoto = (image) => async (dispatch, getState) => {
   const user = auth.currentUser;
-  console.log(image);
+
   if (user) {
     try {
       await updateProfile(user, {

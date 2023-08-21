@@ -15,6 +15,11 @@ import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { registerDB, updateUserProfile } from "../../redux/auth/operations";
+import { db } from "../../firebase/config";
+import { storage } from "../../firebase/config";
+
+//svg
+import AddUserPhoto from "../../assets/svg/addPhotoUser.svg";
 
 const RegistrationScreen = () => {
   const [name, setName] = useState("");
@@ -57,8 +62,20 @@ const RegistrationScreen = () => {
     });
 
     if (!result.canceled) {
-      setImage(result.assets[0].uri);
+      // setImage(result.assets[0].uri);
+      photoLink = await uploadPhotoToServer(result.assets[0].uri);
     }
+  };
+
+  const uploadPhotoToServer = async (image) => {
+    const uniqueIdUserAvatar = Date.now().toString();
+    const response = await fetch(image);
+    const file = await response.blob();
+
+    const data = await storage()
+      .ref(storage`userAvatar/${uniqueIdUserAvatar}`)
+      .put(file);
+    console.log(data);
   };
 
   return (
@@ -100,6 +117,7 @@ const RegistrationScreen = () => {
                   )}
                 </View>
               </View>
+              <AddUserPhoto width={25} height={25} />
               <Text style={styles.title}>Реєстрація</Text>
               <View style={styles.form}>
                 <View style={styles.marginBottom}>

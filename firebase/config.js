@@ -6,6 +6,10 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 // Функція для підключення сховища файлів в проект
 import { getStorage } from "firebase/storage";
+//storage img
+import "firebase/storage";
+//database
+import "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcW-lb4-7k7AQ76wQo0p7PqmcSheeva3Q",
