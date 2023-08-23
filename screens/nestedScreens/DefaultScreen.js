@@ -14,6 +14,11 @@ import {
   updateDataInFirestore,
 } from "../../firebase/service";
 
+//svg
+import Comments from "../../assets/svg/message-circle.svg";
+import Likes from "../../assets/svg/thumbs-up.svg";
+import Map from "../../assets/svg/map-pin.svg";
+
 const DefaultScreen = () => {
   const [posts, setPosts] = useState(null);
   const [isLike, setIsLike] = useState(false);
@@ -87,9 +92,7 @@ const DefaultScreen = () => {
                         })
                       }
                     >
-                      <Image
-                        source={require("../../assets/img/comments.png")}
-                      />
+                      <Comments />
                       <Text style={styles.count}>{2}</Text>
                     </TouchableOpacity>
                     <View style={styles.containerMessage}>
@@ -97,7 +100,7 @@ const DefaultScreen = () => {
                         style={styles.containerMessage}
                         onPress={() => handleChangeLike(id, likes)}
                       >
-                        <Image source={require("../../assets/img/likes.png")} />
+                        <Likes />
                         <Text style={styles.count}>{likes}</Text>
                       </TouchableOpacity>
                     </View>
@@ -111,7 +114,7 @@ const DefaultScreen = () => {
                         })
                       }
                     >
-                      <Image source={require("../../assets/img/map-pin.png")} />
+                      <Map />
                       <Text style={styles.location}>{titleLocation}</Text>
                     </TouchableOpacity>
                   </View>

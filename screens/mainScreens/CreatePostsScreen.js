@@ -23,6 +23,11 @@ import { uriToBlob } from "../../utils/uriToBlob";
 import { useSelector } from "react-redux";
 import { writeDataToFirestore } from "../../firebase/service";
 
+//svg
+import Editphoto from "../../assets/svg/editPhoto.svg";
+import Map from "../../assets/svg/map-pin.svg";
+import Trash from "../../assets/svg/trash.svg";
+
 const CreatePostsScreen = () => {
   //inputs
   const [titlePost, setTitlePost] = useState("");
@@ -69,30 +74,35 @@ const CreatePostsScreen = () => {
 
   //submit
   const handleSubmit = async () => {
-    try {
-      setIsLoading(true);
-      let location = await Location.getCurrentPositionAsync({});
-      const coords = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      };
-      writeDataToFirestore({
-        photo,
-        titlePost,
-        titleLocation,
-        coords,
-        userId,
-        name,
-        image,
-        likes: 0,
-      });
+    if (titleLocation === "" || titlePost === "" || photo === null) {
+      Info();
+      return;
+    } else {
+      try {
+        setIsLoading(true);
+        let location = await Location.getCurrentPositionAsync({});
+        const coords = {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        };
+        writeDataToFirestore({
+          photo,
+          titlePost,
+          titleLocation,
+          coords,
+          userId,
+          name,
+          image,
+          likes: 0,
+        });
 
-      navigation.navigate("Posts");
-    } catch (error) {
-      console.error("Error getting location:", error);
-    } finally {
-      setIsLoading(false);
-      clearPost();
+        navigation.navigate("Posts");
+      } catch (error) {
+        console.error("Error getting location:", error);
+      } finally {
+        setIsLoading(false);
+        clearPost();
+      }
     }
   };
 
@@ -105,6 +115,13 @@ const CreatePostsScreen = () => {
 
   const handleCloseKeyboard = () => {
     Keyboard.dismiss();
+  };
+
+  const Info = () => {
+    Toast.show({
+      type: "info",
+      text1: "Fill in all fields and add a photo",
+    });
   };
 
   const uploadPhotoToServer = async ({ uri, mimeType }) => {
@@ -174,7 +191,7 @@ const CreatePostsScreen = () => {
                   onPress={() => setPhoto(null)}
                   style={styles.editImg}
                 >
-                  <Image source={require("../../assets/img/group.png")}></Image>
+                  <Editphoto />
                 </TouchableOpacity>
               </View>
             )}
@@ -199,10 +216,7 @@ const CreatePostsScreen = () => {
               onChangeText={setTitleLocation}
               onSubmitEditing={handleSubmit}
             />
-            <Image
-              source={require("../../assets/img/map-pin.png")}
-              style={styles.imgLocation}
-            />
+            <Map style={styles.imgLocation} />
           </View>
         </View>
         <View>
@@ -220,10 +234,10 @@ const CreatePostsScreen = () => {
         <View style={styles.clearPost}>
           <TouchableOpacity
             activeOpacity={0.5}
-            style={styles.btnClear}
             onPress={clearPost}
+            disabled={isLoading}
           >
-            <Image source={require("../../assets/img/clearPost.png")} />
+            <Trash style={{ width: 70, height: 40 }} />
           </TouchableOpacity>
         </View>
       </View>
@@ -304,7 +318,7 @@ const styles = StyleSheet.create({
   imgLocation: {
     position: "absolute",
     left: 0,
-    top: 19,
+    top: "27%",
     width: 24,
     height: 24,
   },
@@ -326,15 +340,6 @@ const styles = StyleSheet.create({
     marginBottom: 34,
     justifyContent: "center",
     alignItems: "center",
-  },
-  btnClear: {
-    width: 70,
-    paddingBottom: 8,
-    paddingTop: 8,
-    paddingLeft: 23,
-    paddingRight: 23,
-    backgroundColor: "#F6F6F6",
-    borderRadius: 100,
   },
 });
 

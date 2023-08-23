@@ -20,6 +20,14 @@ import { storage } from "../../firebase/config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { uriToBlob } from "../../utils/uriToBlob";
 
+//svg
+import AddUserPhoto from "../../assets/svg/addPhotoUser.svg";
+import DeleteUserPhoto from "../../assets/svg/deleteUserPhoto.svg";
+import LogOut from "../../assets/svg/logOut.svg";
+import Comments from "../../assets/svg/message-circle.svg";
+import Likes from "../../assets/svg/thumbs-up.svg";
+import Map from "../../assets/svg/map-pin.svg";
+
 const ProfileScreen = () => {
   const [posts, setPosts] = useState(null);
   const navigation = useNavigation();
@@ -87,7 +95,7 @@ const ProfileScreen = () => {
             style={styles.logOut}
             onPress={() => dispatch(authSignOutUser())}
           >
-            <Image source={require("../../assets/img/log-out.png")} />
+            <LogOut />
           </TouchableOpacity>
           <View style={styles.wrapperPhoto}>
             <View style={styles.containerPhoto}>
@@ -97,10 +105,7 @@ const ProfileScreen = () => {
               {user.image ===
               "https://sneg.top/uploads/posts/2023-06/1687881723_sneg-top-p-avatarka-yuzer-vkontakte-2.jpg" ? (
                 <TouchableOpacity activeOpacity={0.8} onPress={pickImage}>
-                  <Image
-                    source={require("../../assets/img/add.png")}
-                    style={styles.btnAdd}
-                  />
+                  <AddUserPhoto style={styles.btnAdd} />
                 </TouchableOpacity>
               ) : (
                 <TouchableOpacity
@@ -113,10 +118,7 @@ const ProfileScreen = () => {
                     )
                   }
                 >
-                  <Image
-                    source={require("../../assets/img/delete.png")}
-                    style={styles.btnDelete}
-                  />
+                  <DeleteUserPhoto style={styles.btnDelete} />
                 </TouchableOpacity>
               )}
             </View>
@@ -150,22 +152,16 @@ const ProfileScreen = () => {
                             navigation.navigate("Comments", { postId: id })
                           }
                         >
-                          <Image
-                            source={require("../../assets/img/comments.png")}
-                          />
+                          <Comments />
                           <Text style={styles.countComments}>{2}</Text>
                         </TouchableOpacity>
                         <View style={styles.containerMessage}>
-                          <Image
-                            source={require("../../assets/img/likes.png")}
-                          />
+                          <Likes />
                           <Text style={styles.countComments}>{3}</Text>
                         </View>
                       </View>
                       <View style={styles.containerLocation}>
-                        <Image
-                          source={require("../../assets/img/map-pin.png")}
-                        />
+                        <Map />
                         <Text style={styles.location}>{titleLocation}</Text>
                       </View>
                     </View>

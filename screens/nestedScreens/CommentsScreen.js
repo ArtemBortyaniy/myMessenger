@@ -6,13 +6,13 @@ import {
   Image,
   TouchableWithoutFeedback,
   Keyboard,
+  ScrollView,
+  TextInput,
 } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
 import { useRoute } from "@react-navigation/native";
 import { useSelector } from "react-redux";
 import {
   writeDataToCommets,
-  getDataFromFirestore,
   getDataFromComments,
 } from "../../firebase/service";
 import moment from "moment";
@@ -25,19 +25,27 @@ const CommentsScreen = () => {
   const route = useRoute();
   const postId = route.params?.postId;
   const postImg = route.params?.postImg;
-  const { image, userId } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth);
 
   useEffect(() => {
     const getCollectioncComments = async () => {
-      const data = getDataFromComments(postId);
-      setAllComments(data);
+      const data = await getDataFromComments(postId);
+      await setAllComments(data);
+      await allComments.map(({ data, id }) => console.log(data, id));
+      console.log(allComments);
     };
 
     getCollectioncComments();
   }, [setAllComments]);
 
   const addCommentsToPost = async () => {
-    await writeDataToCommets(postId, comment, image, getCurrenttime(), userId);
+    await writeDataToCommets(
+      postId,
+      comment,
+      user.image,
+      getCurrenttime(),
+      user.userId
+    );
     setComment(null);
   };
 
@@ -57,32 +65,47 @@ const CommentsScreen = () => {
             <Image source={{ uri: postImg }} style={styles.imgPost} />
           </View>
         </View>
-        <View>
-          <View style={styles.item}>
-            <View style={styles.wrapperImgFriend}>
-              <Image source={require("../../assets/img/friend.png")} />
-            </View>
-            <View style={styles.wrapperMessage}>
-              <Text style={styles.message}>
-                Really love your most recent photo. I’ve been trying to capture
-                the same thing for a few months and would love some tips!
-              </Text>
-              <Text style={styles.time}>09 червня, 2020 | 08:40</Text>
-            </View>
-          </View>
-          <View style={styles.item}>
-            <View style={styles.wrapperMyMessage}>
-              <Text style={styles.message}>
-                A fast 50mm like f1.8 would help with the bokeh. I’ve been using
-                primes as they tend to get a bit sharper images.
-              </Text>
-              <Text style={styles.timeMyMessage}>09 червня, 2020 | 09:14</Text>
-            </View>
-            <View style={styles.wrapperMyImg}>
-              <Image source={require("../../assets/img/userPhoto.png")} />
-            </View>
-          </View>
-        </View>
+        <ScrollView style={{}}>
+          {allComments !== null ? (
+            allComments.map(({ id, data }) => {
+              const { comment, image, time, userId } = data;
+
+              if (userId === user.userId) {
+                return (
+                  <View style={styles.item}>
+                    <View style={styles.wrapperMyMessage}>
+                      <Text style={styles.message}>{comment}</Text>
+                      <Text style={styles.timeMyMessage}>{time}</Text>
+                    </View>
+                    <View style={styles.wrapperMyImg}>
+                      <Image
+                        source={{ uri: image }}
+                        style={{ width: 28, height: 28, borderRadius: 50 }}
+                      />
+                    </View>
+                  </View>
+                );
+              } else {
+                return (
+                  <View style={styles.item}>
+                    <View style={styles.wrapperImgFriend}>
+                      <Image
+                        source={{ uri: image }}
+                        style={{ width: 28, height: 28, borderRadius: 50 }}
+                      />
+                    </View>
+                    <View style={styles.wrapperMessage}>
+                      <Text style={styles.message}>{comment}</Text>
+                      <Text style={styles.time}>{time}</Text>
+                    </View>
+                  </View>
+                );
+              }
+            })
+          ) : (
+            <Text>Loading...</Text>
+          )}
+        </ScrollView>
         <View style={styles.wrapperAddComment}>
           <TextInput
             placeholder="Коментувати..."
@@ -170,6 +193,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     marginBottom: 16,
+    backgroundColor: "#FFFFFF",
   },
   input: {
     padding: 16,

@@ -61,7 +61,6 @@ export const updateDataInFirestore = async (docId, like) => {
     await updateDoc(ref, {
       likes: like,
     });
-    console.log("document updated");
   } catch (error) {
     console.log(error);
   }
@@ -93,10 +92,6 @@ export const getDataFromComments = async (postId) => {
   try {
     const commentsCollection = collection(db, "posts", postId, "comments");
     const snapshot = await getDocs(commentsCollection);
-    console.log(
-      "====>data",
-      snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }))
-    );
     return snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
   } catch (error) {
     console.log(error);
