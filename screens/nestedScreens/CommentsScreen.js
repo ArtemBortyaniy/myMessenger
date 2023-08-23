@@ -52,70 +52,70 @@ const CommentsScreen = () => {
     return moment().locale("uk").format("DD MMMM, YYYY | HH:mm");
   };
 
-  const handleCloseKeyboard = () => {
-    Keyboard.dismiss();
-  };
+  // const handleCloseKeyboard = () => {
+  //   Keyboard.dismiss();
+  // };
 
   return (
-    <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
-      <View style={styles.container}>
-        <View style={styles.wrapper}>
-          <View style={styles.imgPostWrapper}>
-            <Image source={{ uri: postImg }} style={styles.imgPost} />
-          </View>
-        </View>
-        <ScrollView>
-          {allComments !== [] ? (
-            allComments.map(({ id, data }) => {
-              const { comment, image, time, userId } = data;
-
-              if (userId === user.userId) {
-                return (
-                  <View style={styles.item} key={id}>
-                    <View style={styles.wrapperMyMessage}>
-                      <Text style={styles.message}>{comment}</Text>
-                      <Text style={styles.timeMyMessage}>{time}</Text>
-                    </View>
-                    <View style={styles.wrapperMyImg}>
-                      <Image
-                        source={{ uri: image }}
-                        style={{ width: 28, height: 28, borderRadius: 50 }}
-                      />
-                    </View>
-                  </View>
-                );
-              } else {
-                return (
-                  <View style={styles.item}>
-                    <View style={styles.wrapperImgFriend}>
-                      <Image
-                        source={{ uri: image }}
-                        style={{ width: 28, height: 28, borderRadius: 50 }}
-                      />
-                    </View>
-                    <View style={styles.wrapperMessage}>
-                      <Text style={styles.message}>{comment}</Text>
-                      <Text style={styles.time}>{time}</Text>
-                    </View>
-                  </View>
-                );
-              }
-            })
-          ) : (
-            <Text>Loading...</Text>
-          )}
-        </ScrollView>
-        <View style={styles.wrapperAddComment}>
-          <TextInput
-            placeholder="Коментувати..."
-            style={styles.input}
-            value={comment}
-            onChangeText={setComment}
-            onSubmitEditing={addCommentsToPost}
-          />
+    // <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
+    <View style={styles.container}>
+      <View style={styles.wrapper}>
+        <View style={styles.imgPostWrapper}>
+          <Image source={{ uri: postImg }} style={styles.imgPost} />
         </View>
       </View>
-    </TouchableWithoutFeedback>
+      <ScrollView>
+        {allComments !== [] ? (
+          allComments.map(({ id, data }) => {
+            const { comment, image, time, userId } = data;
+
+            if (userId === user.userId) {
+              return (
+                <View style={styles.item} key={id}>
+                  <View style={styles.wrapperMyMessage}>
+                    <Text style={styles.message}>{comment}</Text>
+                    <Text style={styles.timeMyMessage}>{time}</Text>
+                  </View>
+                  <View style={styles.wrapperMyImg}>
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: 28, height: 28, borderRadius: 50 }}
+                    />
+                  </View>
+                </View>
+              );
+            } else {
+              return (
+                <View style={styles.item} key={id}>
+                  <View style={styles.wrapperImgFriend}>
+                    <Image
+                      source={{ uri: image }}
+                      style={{ width: 28, height: 28, borderRadius: 50 }}
+                    />
+                  </View>
+                  <View style={styles.wrapperMessage}>
+                    <Text style={styles.message}>{comment}</Text>
+                    <Text style={styles.time}>{time}</Text>
+                  </View>
+                </View>
+              );
+            }
+          })
+        ) : (
+          <Text>Loading...</Text>
+        )}
+      </ScrollView>
+      <View style={styles.wrapperAddComment}>
+        <TextInput
+          placeholder="Коментувати..."
+          style={styles.input}
+          value={comment}
+          onChangeText={setComment}
+          onSubmitEditing={addCommentsToPost}
+        />
+      </View>
+    </View>
+    // </TouchableWithoutFeedback>
   );
 };
 
@@ -190,8 +190,10 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginHorizontal: 16,
     flex: 1,
+    justifyContent: "flex-end",
     marginBottom: 16,
     backgroundColor: "#FFFFFF",
+    height: 200,
   },
   input: {
     padding: 16,
