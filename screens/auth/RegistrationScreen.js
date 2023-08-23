@@ -14,6 +14,7 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
+import Toast from "react-native-toast-message";
 import { registerDB, updateUserProfile } from "../../redux/auth/operations";
 
 //storage image
@@ -23,6 +24,7 @@ import { uriToBlob } from "../../utils/uriToBlob";
 
 //svg
 import AddUserPhoto from "../../assets/svg/addPhotoUser.svg";
+import DeleteUserPhoto from "../../assets/svg/deleteUserPhoto.svg";
 
 const RegistrationScreen = () => {
   const [name, setName] = useState("");
@@ -34,15 +36,27 @@ const RegistrationScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
+  const Info = () => {
+    Toast.show({
+      type: "info",
+      text1: "Fill in all fields and add a photo",
+    });
+  };
+
   const handleCloseKeyboard = () => {
     Keyboard.dismiss();
   };
 
   const handleOnSubmitEditing = async () => {
     handleCloseKeyboard();
-    await dispatch(registerDB({ email, password }));
-    dispatch(updateUserProfile({ name, image }));
-    reset();
+    if ((name === "" || email === "", password === "", image === null)) {
+      Info();
+      return;
+    } else {
+      await dispatch(registerDB({ email, password }));
+      dispatch(updateUserProfile({ name, image }));
+      reset();
+    }
   };
 
   const reset = () => {
@@ -72,7 +86,6 @@ const RegistrationScreen = () => {
         uri: asset.uri,
         mimeType: asset.uri.split(".").pop(),
       });
-      console.debug(photoLink);
       setImage(photoLink);
     }
   };
@@ -114,25 +127,18 @@ const RegistrationScreen = () => {
                   )}
                   {!image ? (
                     <TouchableOpacity activeOpacity={0.8} onPress={pickImage}>
-                      <Image
-                        source={require("../../assets/img/add.png")}
-                        style={styles.btnAdd}
-                      />
+                      <AddUserPhoto style={styles.btnAdd} />
                     </TouchableOpacity>
                   ) : (
                     <TouchableOpacity
                       activeOpacity={0.8}
                       onPress={() => setImage(null)}
                     >
-                      <Image
-                        source={require("../../assets/img/delete.png")}
-                        style={styles.btnDelete}
-                      />
+                      <DeleteUserPhoto style={styles.btnDelete} />
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
-              {/* <AddUserPhoto styles={{ width: 25, height: 25 }} /> */}
               <Text style={styles.title}>Реєстрація</Text>
               <View style={styles.form}>
                 <View style={styles.marginBottom}>

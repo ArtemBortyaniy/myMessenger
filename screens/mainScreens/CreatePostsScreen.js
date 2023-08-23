@@ -20,8 +20,8 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { uriToBlob } from "../../utils/uriToBlob";
 
 //creacte post
-import { useSelector, useDispatch } from "react-redux";
-import { writeDataToFirestore } from "../../redux/posts/operations";
+import { useSelector } from "react-redux";
+import { writeDataToFirestore } from "../../firebase/service";
 
 const CreatePostsScreen = () => {
   //inputs
@@ -38,9 +38,7 @@ const CreatePostsScreen = () => {
   //navigation
   const navigation = useNavigation();
   //userId
-  const { userId } = useSelector((state) => state.auth);
-  //dispath
-  const dispath = useDispatch();
+  const { userId, name, image } = useSelector((state) => state.auth);
 
   //location
   useEffect(() => {
@@ -74,37 +72,27 @@ const CreatePostsScreen = () => {
     try {
       setIsLoading(true);
       let location = await Location.getCurrentPositionAsync({});
-      const cords = {
+      const coords = {
         latitude: location.coords.latitude,
         longitude: location.coords.longitude,
       };
-      // console.log(
-      //   "titlePost : ",
-      //   titlePost,
-      //   "titleLocation : ",
-      //   titleLocation,
-      //   "location : ",
-      //   coords,
-      //   "photo : ",
-      //   photo,
-      //   "userId : ",
-      //   userId
-      // );
-      dispath(
-        writeDataToFirestore({
-          imgPost,
-          titlePost,
-          titleLocation,
-          cords,
-          userId,
-        })
-      );
-      // navigation.navigate("Posts");
-      clearPost();
+      writeDataToFirestore({
+        photo,
+        titlePost,
+        titleLocation,
+        coords,
+        userId,
+        name,
+        image,
+        likes: 0,
+      });
+
+      navigation.navigate("Posts");
     } catch (error) {
       console.error("Error getting location:", error);
     } finally {
       setIsLoading(false);
+      clearPost();
     }
   };
 
@@ -152,7 +140,6 @@ const CreatePostsScreen = () => {
                           uri: asset,
                           mimeType: asset.split(".").pop(),
                         });
-                        console.debug(photoLink);
                         setPhoto(photoLink);
                       }
                     }}

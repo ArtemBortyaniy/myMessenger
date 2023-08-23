@@ -11,7 +11,6 @@ const MapScreen = () => {
       <MapView
         style={styles.mapStyle}
         region={{
-          // ...location, global state
           ...location,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,

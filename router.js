@@ -19,6 +19,11 @@ import { GoBack } from "./components/GoBack";
 import { HeaderLogOut } from "./components/HeaderLogOut";
 import { HeaderTitle } from "./components/HeaderTitle";
 
+//svg
+import PostsLink from "./assets/svg/postsLink.svg";
+import New from "./assets/svg/new.svg";
+import User from "./assets/svg/user.svg";
+
 const Tab = createBottomTabNavigator();
 const MainStack = createStackNavigator();
 
@@ -55,7 +60,7 @@ function Home() {
           borderTopWidth: 1,
           borderTopColor: "#ccc",
           height: 83,
-          paddingTop: 9,
+          paddingTop: 29,
           paddingBottom: 34,
           paddingLeft: 82,
           paddingRight: 81,
@@ -74,9 +79,7 @@ function Home() {
         options={{
           headerTitle: () => <HeaderTitle title={"Posts"} />,
           headerRight: () => <HeaderLogOut />,
-          tabBarIcon: ({ color, size }) => (
-            <Image source={require("./assets/img/grid.png")} />
-          ),
+          tabBarIcon: ({ color, size }) => <PostsLink />,
           tabBarLabel: "",
         }}
       />
@@ -86,9 +89,7 @@ function Home() {
         options={{
           headerTitle: () => <HeaderTitle title={"Create post"} />,
           headerLeft: () => <GoBack />,
-          tabBarIcon: ({ color, size }) => (
-            <Image source={require("./assets/img/new.png")} />
-          ),
+          tabBarIcon: ({ color, size }) => <New />,
           tabBarLabel: "",
           tabBarStyle: { display: "none" },
         }}
@@ -98,9 +99,7 @@ function Home() {
         component={ProfileScreen}
         options={{
           headerTitle: () => <HeaderTitle title={"Profile"} />,
-          tabBarIcon: ({ color, size }) => (
-            <Image source={require("./assets/img/user.png")} />
-          ),
+          tabBarIcon: ({ color, size }) => <User />,
           tabBarLabel: "",
         }}
       />

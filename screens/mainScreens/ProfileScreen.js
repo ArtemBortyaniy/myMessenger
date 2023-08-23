@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -13,51 +13,30 @@ import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
 import { authSignOutUser, updateUserPhoto } from "../../redux/auth/operations";
 import { useSelector } from "react-redux";
+import { getDataFromFirestore } from "../../firebase/service";
 
 //storage image
 import { storage } from "../../firebase/config";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { uriToBlob } from "../../utils/uriToBlob";
 
-export const data = [
-  {
-    id: 1,
-    img: require("../../assets/img/post.png"),
-    title: "Ліс",
-    commentsCount: 3,
-    likesCount: 2,
-    country: "Ukraine",
-  },
-  {
-    id: 2,
-    img: require("../../assets/img/post.png"),
-    title: "Ліс",
-    commentsCount: 3,
-    likesCount: 2,
-    country: "Ukraine",
-  },
-  {
-    id: 3,
-    img: require("../../assets/img/post.png"),
-    title: "Ліс",
-    commentsCount: 3,
-    likesCount: 2,
-    country: "Ukraine",
-  },
-  {
-    id: 4,
-    img: require("../../assets/img/post.png"),
-    title: "Ліс",
-    commentsCount: 3,
-    likesCount: 2,
-    country: "Ukraine",
-  },
-];
-
 const ProfileScreen = () => {
+  const [posts, setPosts] = useState(null);
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getDataFromFirestore();
+      const filteredPosts = data.filter(
+        (post) => post.data.userId === user.userId
+      );
+      setPosts(filteredPosts);
+    };
+
+    fetchData();
+  }, [posts]);
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -68,8 +47,6 @@ const ProfileScreen = () => {
     });
 
     if (!result.canceled) {
-      // setImage(result.assets[0].uri);
-      // dispatch(updateUserPhoto(result.assets[0].uri));
       const asset = result.assets[0];
 
       photoLink = await uploadPhotoToServer({
@@ -144,14 +121,23 @@ const ProfileScreen = () => {
               )}
             </View>
           </View>
-          <Text style={styles.nameUser}>Natali Romanova</Text>
+          <Text style={styles.nameUser}>{user.name}</Text>
           <ScrollView style={styles.wrapperPosts}>
-            {data.map(
-              ({ id, img, title, commentsCount, country, likesCount }) => {
+            {posts ? (
+              posts.map(({ id, data }) => {
+                const {
+                  photo,
+                  titlePost,
+                  titleLocation,
+                  // coords,
+                  // userId,
+                  // name,
+                  // image,
+                } = data;
                 return (
                   <View style={styles.item} key={id}>
-                    <Image source={img} style={styles.imgPost} />
-                    <Text style={styles.titlePost}>{title}</Text>
+                    <Image source={{ uri: photo }} style={styles.imgPost} />
+                    <Text style={styles.titlePost}>{titlePost}</Text>
                     <View style={styles.info}>
                       <View style={styles.containerMessage}>
                         <TouchableOpacity
@@ -160,32 +146,34 @@ const ProfileScreen = () => {
                             ...styles.marginRight,
                           }}
                           activeOpacity={0.6}
-                          onPress={() => navigation.navigate("Comments")}
+                          onPress={() =>
+                            navigation.navigate("Comments", { postId: id })
+                          }
                         >
                           <Image
                             source={require("../../assets/img/comments.png")}
                           />
-                          <Text style={styles.countComments}>
-                            {commentsCount}
-                          </Text>
+                          <Text style={styles.countComments}>{2}</Text>
                         </TouchableOpacity>
                         <View style={styles.containerMessage}>
                           <Image
                             source={require("../../assets/img/likes.png")}
                           />
-                          <Text style={styles.countComments}>{likesCount}</Text>
+                          <Text style={styles.countComments}>{3}</Text>
                         </View>
                       </View>
                       <View style={styles.containerLocation}>
                         <Image
                           source={require("../../assets/img/map-pin.png")}
                         />
-                        <Text style={styles.location}>{country}</Text>
+                        <Text style={styles.location}>{titleLocation}</Text>
                       </View>
                     </View>
                   </View>
                 );
-              }
+              })
+            ) : (
+              <Text>Не має постів</Text>
             )}
           </ScrollView>
         </View>
