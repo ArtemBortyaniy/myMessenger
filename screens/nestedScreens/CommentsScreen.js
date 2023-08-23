@@ -20,7 +20,7 @@ import "moment/locale/uk";
 
 const CommentsScreen = () => {
   const [comment, setComment] = useState(null);
-  const [allComments, setAllComments] = useState(null);
+  const [allComments, setAllComments] = useState([]);
 
   const route = useRoute();
   const postId = route.params?.postId;
@@ -30,9 +30,8 @@ const CommentsScreen = () => {
   useEffect(() => {
     const getCollectioncComments = async () => {
       const data = await getDataFromComments(postId);
-      await setAllComments(data);
-      await allComments.map(({ data, id }) => console.log(data, id));
-      console.log(allComments);
+      setAllComments(data);
+      allComments.map(({ data, id }) => console.log("data =>", data, id));
     };
 
     getCollectioncComments();
@@ -65,14 +64,14 @@ const CommentsScreen = () => {
             <Image source={{ uri: postImg }} style={styles.imgPost} />
           </View>
         </View>
-        <ScrollView style={{}}>
-          {allComments !== null ? (
+        <ScrollView>
+          {allComments !== [] ? (
             allComments.map(({ id, data }) => {
               const { comment, image, time, userId } = data;
 
               if (userId === user.userId) {
                 return (
-                  <View style={styles.item}>
+                  <View style={styles.item} key={id}>
                     <View style={styles.wrapperMyMessage}>
                       <Text style={styles.message}>{comment}</Text>
                       <Text style={styles.timeMyMessage}>{time}</Text>
@@ -191,7 +190,6 @@ const styles = StyleSheet.create({
     marginTop: 7,
     marginHorizontal: 16,
     flex: 1,
-    justifyContent: "flex-end",
     marginBottom: 16,
     backgroundColor: "#FFFFFF",
   },
