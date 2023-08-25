@@ -52,18 +52,19 @@ const CommentsScreen = () => {
     return moment().locale("uk").format("DD MMMM, YYYY | HH:mm");
   };
 
-  // const handleCloseKeyboard = () => {
-  //   Keyboard.dismiss();
-  // };
+  const handleCloseKeyboard = () => {
+    Keyboard.dismiss();
+  };
 
   return (
-    // <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
     <View style={styles.container}>
-      <View style={styles.wrapper}>
-        <View style={styles.imgPostWrapper}>
-          <Image source={{ uri: postImg }} style={styles.imgPost} />
+      <TouchableWithoutFeedback onPress={() => handleCloseKeyboard()}>
+        <View style={styles.wrapper}>
+          <View style={styles.imgPostWrapper}>
+            <Image source={{ uri: postImg }} style={styles.imgPost} />
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
       <ScrollView>
         {allComments !== [] ? (
           allComments.map(({ id, data }) => {
@@ -115,7 +116,6 @@ const CommentsScreen = () => {
         />
       </View>
     </View>
-    // </TouchableWithoutFeedback>
   );
 };
 
