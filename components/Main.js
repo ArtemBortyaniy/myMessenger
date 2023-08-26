@@ -8,7 +8,7 @@ import { stateChangedUser } from "../redux/auth/operations";
 import { NavigationContainer } from "@react-navigation/native";
 
 //HOOK routers
-import useRoute from "../router";
+import useRoutes from "../router";
 
 const Main = () => {
   const { stateChange } = useSelector((state) => state.auth);
@@ -19,8 +19,7 @@ const Main = () => {
     dispatch(stateChangedUser());
   }, []);
 
-  const isLogined = useRoute(stateChange);
-  useEffect(() => {}, []);
+  const isLogined = useRoutes(stateChange);
 
   return <NavigationContainer>{isLogined}</NavigationContainer>;
 };

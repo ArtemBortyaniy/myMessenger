@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import {
   writeDataToCommets,
   getDataFromComments,
+  updateComments,
 } from "../../firebase/service";
 import moment from "moment";
 import "moment/locale/uk";
@@ -31,11 +32,12 @@ const CommentsScreen = () => {
     const getCollectioncComments = async () => {
       const data = await getDataFromComments(postId);
       setAllComments(data);
-      allComments.map(({ data, id }) => console.log("data =>", data, id));
+      const count = data.length;
+      await updateComments(postId, count);
     };
 
     getCollectioncComments();
-  }, [setAllComments]);
+  }, [allComments]);
 
   const addCommentsToPost = async () => {
     await writeDataToCommets(
@@ -189,11 +191,9 @@ const styles = StyleSheet.create({
   wrapperAddComment: {
     marginTop: 7,
     marginHorizontal: 16,
-    flex: 1,
     justifyContent: "flex-end",
     marginBottom: 16,
     backgroundColor: "#FFFFFF",
-    height: 200,
   },
   input: {
     padding: 16,

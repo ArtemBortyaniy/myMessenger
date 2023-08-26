@@ -25,6 +25,8 @@ export const writeDataToFirestore = async ({
   name,
   image,
   likes,
+  isLike,
+  commentCount,
 }) => {
   try {
     const docRef = await addDoc(collection(db, "posts"), {
@@ -36,6 +38,8 @@ export const writeDataToFirestore = async ({
       name,
       image,
       likes,
+      isLike,
+      commentCount,
     });
     Successful();
   } catch (e) {
@@ -54,12 +58,25 @@ export const getDataFromFirestore = async () => {
   }
 };
 
-export const updateDataInFirestore = async (docId, like) => {
+export const updateDataInFirestore = async (docId, isLike, like) => {
   try {
     const ref = doc(db, "posts", docId);
 
     await updateDoc(ref, {
       likes: like,
+      isLike: isLike,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateComments = async (docId, count) => {
+  try {
+    const ref = doc(db, "posts", docId);
+
+    await updateDoc(ref, {
+      commentCount: count,
     });
   } catch (error) {
     console.log(error);

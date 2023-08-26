@@ -127,37 +127,25 @@ const ProfileScreen = () => {
           <ScrollView style={styles.wrapperPosts}>
             {posts ? (
               posts.map(({ id, data }) => {
-                const {
-                  photo,
-                  titlePost,
-                  titleLocation,
-                  // coords,
-                  // userId,
-                  // name,
-                  // image,
-                } = data;
+                const { photo, titlePost, titleLocation, likes, commentCount } =
+                  data;
                 return (
                   <View style={styles.item} key={id}>
                     <Image source={{ uri: photo }} style={styles.imgPost} />
                     <Text style={styles.titlePost}>{titlePost}</Text>
                     <View style={styles.info}>
                       <View style={styles.containerMessage}>
-                        <TouchableOpacity
-                          style={{
-                            ...styles.containerMessage,
-                            ...styles.marginRight,
-                          }}
-                          activeOpacity={0.6}
-                          onPress={() =>
-                            navigation.navigate("Comments", { postId: id })
-                          }
+                        <View
+                          style={[styles.containerMessage, styles.marginRight]}
                         >
                           <Comments />
-                          <Text style={styles.countComments}>{2}</Text>
-                        </TouchableOpacity>
+                          <Text style={styles.countComments}>
+                            {commentCount}
+                          </Text>
+                        </View>
                         <View style={styles.containerMessage}>
                           <Likes />
-                          <Text style={styles.countComments}>{3}</Text>
+                          <Text style={styles.countComments}>{likes}</Text>
                         </View>
                       </View>
                       <View style={styles.containerLocation}>

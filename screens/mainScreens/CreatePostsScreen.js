@@ -94,6 +94,8 @@ const CreatePostsScreen = () => {
           name,
           image,
           likes: 0,
+          isLike: false,
+          commentCount: 0,
         });
 
         navigation.navigate("Posts");
