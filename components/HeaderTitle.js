@@ -2,9 +2,11 @@ import { Text, View } from "react-native";
 
 export const HeaderTitle = ({ title }) => (
   <View
-    style={{
-      marginBottom: 11,
-    }}
+    style={
+      {
+        // marginBottom: 11,
+      }
+    }
   >
     <Text
       style={{
