@@ -11,23 +11,26 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.artembortianiy.rnsocial"
+      "bundleIdentifier": "com.artembortianiy.rnsocial",
+      "config": {
+        "googleMapsApiKey": "AIzaSyAWHN24utZg0YKFyRBldM6AzDYdAMeMpwA"
+      }
     },
     "android": {
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyDe-jvzgQF1TAvDKeZKNWaGboiBFEGpiPw"
+        }
+      },
       "softwareKeyboardLayoutMode": "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
-      ],
+      "permissions": ["ACCESS_FINE_LOCATION", "ACCESS_COARSE_LOCATION"],
       "package": "com.artembortianiy.rnsocial"
     },
     "web": {

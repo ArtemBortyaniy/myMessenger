@@ -2,6 +2,7 @@ import React from "react";
 import { useRoute } from "@react-navigation/native";
 import { View, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker } from "react-native-maps";
+import { PROVIDER_GOOGLE } from "react-native-maps";
 
 const MapScreen = () => {
   const route = useRoute();
@@ -9,6 +10,7 @@ const MapScreen = () => {
   return (
     <View style={styles.container}>
       <MapView
+        provider={PROVIDER_GOOGLE}
         style={styles.mapStyle}
         region={{
           ...location,
